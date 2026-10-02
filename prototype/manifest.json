@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Pan – Panoptic Co-Pilot",
+  "version": "0.1.0",
+  "description": "Real-time distributed AI helper inside every tab",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }],
+  "action": {
+    "default_title": "Pan"
+  }
+}
