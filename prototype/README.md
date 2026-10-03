@@ -1,13 +1,20 @@
-# Pan Browser Prototype
+# Pan Browser Prototype (v0.3)
 
-Minimal Manifest V3 extension that injects Pan into any webpage.
+Floating real-time panel that injects into any webpage.
+
+## What's new in v0.3
+- Background service worker stub ready for message passing
+- Clear architecture document for wiring real organs
+- Host permissions prepared for a future Vercel/Netlify backend
+- Manifest bumped
 
 ## Load it
-1. Open chrome://extensions
+1. Open `chrome://extensions`
 2. Enable Developer mode
 3. Load unpacked → select this `prototype` folder
+4. Click the 🧠 button inside any page for a synthesis (currently mock)
 
-Pan appears as a floating panel in the bottom-right of every tab.
+## Next
+See `/docs/ARCHITECTURE.md` for the plan to connect Memory Palace + Linear + Calendar.
 
-This is the first tangible piece of the "real-time inside all the apps" vision.
-Next evolution: wire it to the Memory Palace + Linear + Calendar via a small backend.
+The content script is deliberately structured so the mock can be swapped for a real `fetch` to the backend with minimal changes.
