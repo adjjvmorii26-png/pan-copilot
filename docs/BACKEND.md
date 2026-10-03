@@ -1,42 +1,52 @@
-# Pan Backend – Quick Start
+# Pan Backend – Deploy & Connect
 
-## What this is
-A minimal serverless function (`/api/synthesize`) that performs Context Synthesis by gathering from:
-- Notion Memory Palace
-- Linear issues
-- Google Calendar (stubbed)
+## What it does
+`POST /api/synthesize` gathers live context from:
+- Notion Memory Palace (Active + High priority entries)
+- Linear (open issues in any project whose name contains "Pan")
+- Current page title (always)
 
-## Deploy (Vercel recommended)
+and returns the structured format expected by the Context Synthesis skill and the browser panel.
 
-1. Push this repo (already done)
-2. Import the repo in Vercel
-3. Set environment variables:
-   - `NOTION_TOKEN`
-   - `NOTION_DATABASE_ID` (the Pan Memory Palace collection id)
-   - `LINEAR_API_KEY`
-   - (later) Google credentials
-4. Deploy
+## Required Environment Variables
 
-The function will be available at:
-`https://your-project.vercel.app/api/synthesize`
+| Variable              | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `NOTION_TOKEN`        | Notion internal integration token                |
+| `NOTION_DATABASE_ID`  | ID of the "Pan Memory Palace" database           |
+| `LINEAR_API_KEY`      | Linear personal API key                          |
 
-## Connect the browser prototype
-In `prototype/content.js`, replace the mock `runContextSynthesis` body with:
+If any are missing the function still works but returns clearly marked stubs.
+
+## Deploy on Vercel (fastest)
+
+1. Go to vercel.com → Add New Project
+2. Import `adjjvmorii26-png/pan-copilot`
+3. Framework preset: Other (or leave default)
+4. Add the three environment variables above
+5. Deploy
+
+Your endpoint will be:
+`https://<project-name>.vercel.app/api/synthesize`
+
+## Connect the browser extension
+
+Open `prototype/content.js` and set:
 
 ```js
-const res = await fetch('https://your-project.vercel.app/api/synthesize', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    query,
-    pageTitle: document.title,
-    pageUrl: location.href,
-    focus: ['memory', 'tasks', 'calendar']
-  })
-});
-const data = await res.json();
-// then render data.status, data.signals, etc.
+const PAN_API_URL = 'https://<project-name>.vercel.app/api/synthesize';
 ```
 
-## Current status
-Scaffold only. Stubs return realistic placeholder signals so the contract can be tested end-to-end before real credentials are added.
+Reload the extension. Click 🧠. You should now see live Memory Palace + Linear signals.
+
+## Notion setup reminder
+- Create an internal integration at https://www.notion.so/my-integrations
+- Share the Pan Memory Palace database with that integration
+- Copy the database ID (from the URL or the collection id)
+
+## Linear setup reminder
+- Settings → API → Personal API keys → Create key
+- Paste as `LINEAR_API_KEY`
+
+## Current version
+0.4.0 – real client code with graceful fallbacks.
