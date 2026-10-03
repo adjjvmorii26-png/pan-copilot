@@ -1,4 +1,4 @@
-# Skill: Context Synthesis  v1.1
+# Skill: Context Synthesis  v1.2
 
 **Purpose**  
 Pull relevant signals from multiple organs and produce a single coherent, actionable picture. This is Pan’s primary sense organ.
@@ -7,6 +7,7 @@ Pull relevant signals from multiple organs and produce a single coherent, action
 - User asks for overview, status, "what’s going on", or cross-app help
 - Before making any non-trivial decision
 - When starting a new session or after "pan" is called
+- Via the 🧠 button in the browser prototype
 
 **Process**
 1. **Scope** — Clarify the focus (time horizon, domains: code / tasks / time / memory / open loops). Default = next 24-48h + active projects.
@@ -33,3 +34,5 @@ Pull relevant signals from multiple organs and produce a single coherent, action
 
 **Mutation Potential**: High  
 Triggers: after every major synthesis, or when a new organ comes online.
+
+**v1.2 change**: Explicitly linked to browser prototype 🧠 button and current live exercise.
