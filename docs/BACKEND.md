@@ -1,52 +1,36 @@
-# Pan Backend – Deploy & Connect
+# Pan Backend (Netlify)
 
-## What it does
-`POST /api/synthesize` gathers live context from:
-- Notion Memory Palace (Active + High priority entries)
-- Linear (open issues in any project whose name contains "Pan")
-- Current page title (always)
+## Live site
+- Project: https://app.netlify.com/projects/pan-copilot
+- Primary URL: https://pan-copilot.netlify.app
+- Function endpoint (once deployed): https://pan-copilot.netlify.app/api/synthesize
 
-and returns the structured format expected by the Context Synthesis skill and the browser panel.
+## What I already did for you
+1. Created the Netlify site `pan-copilot`
+2. Wrote the function in modern Netlify format (`netlify/functions/synthesize.js`)
+3. Added `netlify.toml` + redirect so `/api/synthesize` works
+4. Real Notion + Linear clients with graceful stubs
 
-## Required Environment Variables
+## What still needs a human (secrets)
+I cannot see or set your private tokens. You only need to do this once:
 
-| Variable              | Description                                      |
-|-----------------------|--------------------------------------------------|
-| `NOTION_TOKEN`        | Notion internal integration token                |
-| `NOTION_DATABASE_ID`  | ID of the "Pan Memory Palace" database           |
-| `LINEAR_API_KEY`      | Linear personal API key                          |
+1. Open https://app.netlify.com/projects/pan-copilot
+2. Site configuration → Environment variables
+3. Add:
+   - `NOTION_TOKEN`
+   - `NOTION_DATABASE_ID`
+   - `LINEAR_API_KEY`
+4. Trigger a deploy (or connect the GitHub repo so every push deploys)
 
-If any are missing the function still works but returns clearly marked stubs.
-
-## Deploy on Vercel (fastest)
-
-1. Go to vercel.com → Add New Project
-2. Import `adjjvmorii26-png/pan-copilot`
-3. Framework preset: Other (or leave default)
-4. Add the three environment variables above
-5. Deploy
-
-Your endpoint will be:
-`https://<project-name>.vercel.app/api/synthesize`
-
-## Connect the browser extension
-
-Open `prototype/content.js` and set:
+## Connect the extension
+In `prototype/content.js` set:
 
 ```js
-const PAN_API_URL = 'https://<project-name>.vercel.app/api/synthesize';
+const PAN_API_URL = 'https://pan-copilot.netlify.app/api/synthesize';
 ```
 
-Reload the extension. Click 🧠. You should now see live Memory Palace + Linear signals.
+Reload the extension → click 🧠.
 
-## Notion setup reminder
-- Create an internal integration at https://www.notion.so/my-integrations
-- Share the Pan Memory Palace database with that integration
-- Copy the database ID (from the URL or the collection id)
-
-## Linear setup reminder
-- Settings → API → Personal API keys → Create key
-- Paste as `LINEAR_API_KEY`
-
-## Current version
-0.4.0 – real client code with graceful fallbacks.
+## Notion / Linear reminders
+- Notion: create an internal integration, share the Memory Palace database with it, copy the database ID.
+- Linear: Settings → API → Personal API key.
