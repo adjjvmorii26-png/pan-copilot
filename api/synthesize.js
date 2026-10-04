@@ -1,16 +1,8 @@
-// Pan – Context Synthesis API
-// Vercel Serverless Function
+// Pan – Context Synthesis API (Vercel)
 // POST /api/synthesize
-//
-// Env vars required for live data:
-//   NOTION_TOKEN
-//   NOTION_DATABASE_ID          (Pan Memory Palace database id)
-//   LINEAR_API_KEY
-//
-// Optional:
-//   LINEAR_PROJECT_ID           (defaults to looking up by name)
+// Env: NOTION_TOKEN, NOTION_DATABASE_ID, LINEAR_API_KEY (optional)
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -19,7 +11,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const body = req.body || {};
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const query = body.query || '';
     const pageTitle = body.pageTitle || '';
     const pageUrl = body.pageUrl || '';
@@ -29,15 +21,13 @@ export default async function handler(req, res) {
     const tensions = [];
     const notes = [];
 
-    // ---- Memory Palace (Notion) ----
     if (focus.includes('memory')) {
-      const memory = await fetchMemoryPalace(query);
+      const memory = await fetchMemoryPalace();
       signals.push(...memory.signals);
       if (memory.warning) tensions.push(memory.warning);
       if (memory.note) notes.push(memory.note);
     }
 
-    // ---- Linear tasks ----
     if (focus.includes('tasks')) {
       const tasks = await fetchLinearIssues();
       signals.push(...tasks.signals);
@@ -45,35 +35,27 @@ export default async function handler(req, res) {
       if (tasks.note) notes.push(tasks.note);
     }
 
-    // ---- Calendar (still stub for now) ----
     if (focus.includes('calendar')) {
       signals.push({
         source: 'Calendar',
-        text: 'Calendar integration still stubbed. Pan Awakening event exists from birth day.'
+        text: 'Calendar still stubbed. Awakening event exists from birth day.'
       });
     }
 
-    // Always include current page
     signals.push({
       source: 'Page',
       text: pageTitle || pageUrl || 'unknown page'
     });
 
-    // Derive simple tensions
-    if (signals.some(s => s.source === 'Linear' && (s.text.includes('Backlog') || s.text.includes('In Progress')))) {
-      tensions.push('Open Linear work exists that the panel can now surface live once deployed.');
-    }
-
-    const recommendations = buildRecommendations(signals, tensions, notes);
-
     return res.status(200).json({
       status: buildStatus(query, signals, notes),
       signals,
       tensions,
-      recommendations,
+      recommendations: buildRecommendations(notes),
       meta: {
         generatedAt: new Date().toISOString(),
-        version: '0.4.0',
+        version: '0.6.0-vercel',
+        host: 'vercel',
         organsQueried: focus,
         live: {
           notion: Boolean(process.env.NOTION_TOKEN && process.env.NOTION_DATABASE_ID),
@@ -86,35 +68,28 @@ export default async function handler(req, res) {
     return res.status(500).json({
       error: 'Synthesis failed',
       message: err.message,
-      status: 'Pan hit an error while synthesizing. Check function logs.'
+      status: 'Pan hit an error while synthesizing.'
     });
   }
-}
+};
 
-// ------------------------------------------------------------------
-// Notion – Memory Palace
-// ------------------------------------------------------------------
-async function fetchMemoryPalace(query) {
+async function fetchMemoryPalace() {
   const token = process.env.NOTION_TOKEN;
   const databaseId = process.env.NOTION_DATABASE_ID;
 
   if (!token || !databaseId) {
     return {
-      signals: [{
-        source: 'Memory Palace',
-        text: '[stub] NOTION_TOKEN or NOTION_DATABASE_ID missing. Using placeholder.'
-      }],
-      warning: 'Notion credentials not configured – Memory Palace is stubbed',
+      signals: [{ source: 'Memory Palace', text: '[stub] Notion credentials missing.' }],
+      warning: 'Notion credentials not configured',
       note: 'set NOTION_TOKEN + NOTION_DATABASE_ID'
     };
   }
 
   try {
-    // Query the database for the most recent Active / high-priority items
     const res = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json'
       },
@@ -132,12 +107,12 @@ async function fetchMemoryPalace(query) {
 
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Notion ${res.status}: ${errText.slice(0, 200)}`);
+      throw new Error(`Notion ${res.status}: ${errText.slice(0, 180)}`);
     }
 
     const data = await res.json();
-    const signals = (data.results || []).map(page => {
-      const title = extractNotionTitle(page);
+    const signals = (data.results || []).map((page) => {
+      const title = extractTitle(page);
       const type = page.properties?.Type?.select?.name || 'Entry';
       const status = page.properties?.Status?.select?.name || '';
       return {
@@ -160,79 +135,59 @@ async function fetchMemoryPalace(query) {
   }
 }
 
-function extractNotionTitle(page) {
-  const titleProp = page.properties?.Name || page.properties?.title;
-  if (!titleProp) return 'Untitled';
-  const rich = titleProp.title || titleProp.rich_text || [];
-  return rich.map(t => t.plain_text).join('') || 'Untitled';
+function extractTitle(page) {
+  const prop = page.properties?.Name || page.properties?.title;
+  if (!prop) return 'Untitled';
+  const rich = prop.title || prop.rich_text || [];
+  return rich.map((t) => t.plain_text).join('') || 'Untitled';
 }
 
-// ------------------------------------------------------------------
-// Linear
-// ------------------------------------------------------------------
 async function fetchLinearIssues() {
   const apiKey = process.env.LINEAR_API_KEY;
-
   if (!apiKey) {
     return {
-      signals: [{
-        source: 'Linear',
-        text: '[stub] LINEAR_API_KEY missing. Using placeholder.'
-      }],
-      warning: 'Linear credentials not configured – tasks are stubbed',
+      signals: [{ source: 'Linear', text: '[stub] LINEAR_API_KEY not set yet.' }],
+      warning: 'Linear credentials not configured',
       note: 'set LINEAR_API_KEY'
     };
   }
 
   try {
-    const query = `
-      query {
-        issues(
-          filter: {
-            project: { name: { containsIgnoreCase: "Pan" } }
-            state: { type: { nin: ["completed", "canceled"] } }
-          }
-          first: 8
-          orderBy: updatedAt
-        ) {
-          nodes {
-            identifier
-            title
-            priority
-            state { name type }
-            url
-          }
+    const query = `query {
+      issues(
+        filter: {
+          project: { name: { containsIgnoreCase: "Pan" } }
+          state: { type: { nin: ["completed", "canceled"] } }
         }
+        first: 8
+        orderBy: updatedAt
+      ) {
+        nodes { identifier title state { name } }
       }
-    `;
+    }`;
 
     const res = await fetch('https://api.linear.app/graphql', {
       method: 'POST',
-      headers: {
-        'Authorization': apiKey,
-        'Content-Type': 'application/json'
-      },
+      headers: { Authorization: apiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({ query })
     });
 
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Linear ${res.status}: ${errText.slice(0, 200)}`);
+      throw new Error(`Linear ${res.status}: ${errText.slice(0, 180)}`);
     }
 
     const data = await res.json();
-    if (data.errors) {
-      throw new Error(data.errors[0]?.message || 'Linear GraphQL error');
-    }
+    if (data.errors) throw new Error(data.errors[0]?.message || 'Linear GraphQL error');
 
     const nodes = data.data?.issues?.nodes || [];
-    const signals = nodes.map(issue => ({
+    const signals = nodes.map((i) => ({
       source: 'Linear',
-      text: `${issue.identifier} [${issue.state?.name || '?'}] ${issue.title}`
+      text: `${i.identifier} [${i.state?.name || '?'}] ${i.title}`
     }));
 
     if (signals.length === 0) {
-      signals.push({ source: 'Linear', text: 'No open issues found in Pan project.' });
+      signals.push({ source: 'Linear', text: 'No open issues in Pan project.' });
     }
 
     return { signals };
@@ -245,34 +200,25 @@ async function fetchLinearIssues() {
   }
 }
 
-// ------------------------------------------------------------------
-// Helpers
-// ------------------------------------------------------------------
 function buildStatus(query, signals, notes) {
-  const liveCount = signals.filter(s => !s.text.startsWith('[stub]') && !s.text.startsWith('[error]')).length;
-  const base = query
-    ? `Synthesis for "${query}".`
-    : 'General status synthesis.';
-  return `${base} ${liveCount} live signal(s). ${notes.length ? notes.join(' · ') : ''}`.trim();
+  const live = signals.filter(
+    (s) => !s.text.startsWith('[stub]') && !s.text.startsWith('[error]')
+  ).length;
+  const base = query ? `Synthesis for "${query}".` : 'General status synthesis.';
+  return `${base} ${live} live signal(s). ${notes.join(' · ')}`.trim();
 }
 
-function buildRecommendations(signals, tensions, notes) {
+function buildRecommendations(notes) {
   const recs = [];
-
-  if (notes.some(n => n.includes('NOTION'))) {
-    recs.push('1. Set NOTION_TOKEN and NOTION_DATABASE_ID in the deployment environment');
+  if (notes.some((n) => n.includes('NOTION'))) {
+    recs.push('1. Notion credentials look incomplete');
   }
-  if (notes.some(n => n.includes('LINEAR'))) {
-    recs.push(`${recs.length + 1}. Set LINEAR_API_KEY so tasks become live`);
-  }
-  if (tensions.length && recs.length === 0) {
-    recs.push('1. Review open Linear issues surfaced above');
-    recs.push('2. Consider closing or updating any that are done');
+  if (notes.some((n) => n.includes('LINEAR'))) {
+    recs.push(`${recs.length + 1}. Add LINEAR_API_KEY for live tasks`);
   }
   if (recs.length === 0) {
-    recs.push('1. All configured organs responded');
-    recs.push('2. Continue using the panel — live data is flowing');
+    recs.push('1. Configured organs responded');
+    recs.push('2. Live data is flowing');
   }
-
   return recs;
 }
