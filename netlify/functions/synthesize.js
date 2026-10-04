@@ -1,25 +1,33 @@
-// Pan Context Synthesis – Netlify Function
-// POST /.netlify/functions/synthesize  or  /api/synthesize (via redirect)
+// Pan – Context Synthesis Backend (Netlify Function)
+// POST /.netlify/functions/synthesize
+//
+// Env vars (already partially set):
+//   NOTION_TOKEN
+//   NOTION_DATABASE_ID
+//   LINEAR_API_KEY (optional)
 
-export default async (req, context) => {
-  // CORS
+exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json'
   };
 
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 200, headers });
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
   }
 
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers });
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method not allowed' })
+    };
   }
 
   try {
-    const body = await req.json().catch(() => ({}));
+    const body = JSON.parse(event.body || '{}');
     const query = body.query || '';
     const pageTitle = body.pageTitle || '';
     const pageUrl = body.pageUrl || '';
@@ -30,7 +38,7 @@ export default async (req, context) => {
     const notes = [];
 
     if (focus.includes('memory')) {
-      const memory = await fetchMemoryPalace(query);
+      const memory = await fetchMemoryPalace();
       signals.push(...memory.signals);
       if (memory.warning) tensions.push(memory.warning);
       if (memory.note) notes.push(memory.note);
@@ -46,7 +54,7 @@ export default async (req, context) => {
     if (focus.includes('calendar')) {
       signals.push({
         source: 'Calendar',
-        text: 'Calendar still stubbed. Pan Awakening event exists from birth day.'
+        text: 'Calendar still stubbed. Awakening event exists from birth day.'
       });
     }
 
@@ -55,55 +63,50 @@ export default async (req, context) => {
       text: pageTitle || pageUrl || 'unknown page'
     });
 
-    if (signals.some(s => s.source === 'Linear' && (s.text.includes('Backlog') || s.text.includes('In Progress')))) {
-      tensions.push('Open Linear work exists that the panel can surface live once credentials are set.');
-    }
+    const recommendations = buildRecommendations(notes, tensions);
 
-    const recommendations = buildRecommendations(signals, tensions, notes);
-
-    const result = {
-      status: buildStatus(query, signals, notes),
-      signals,
-      tensions,
-      recommendations,
-      meta: {
-        generatedAt: new Date().toISOString(),
-        version: '0.4.1-netlify',
-        organsQueried: focus,
-        live: {
-          notion: Boolean(Netlify.env.get('NOTION_TOKEN') && Netlify.env.get('NOTION_DATABASE_ID')),
-          linear: Boolean(Netlify.env.get('LINEAR_API_KEY'))
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        status: buildStatus(query, signals, notes),
+        signals,
+        tensions,
+        recommendations,
+        meta: {
+          generatedAt: new Date().toISOString(),
+          version: '0.5.0',
+          organsQueried: focus,
+          live: {
+            notion: Boolean(process.env.NOTION_TOKEN && process.env.NOTION_DATABASE_ID),
+            linear: Boolean(process.env.LINEAR_API_KEY)
+          }
         }
-      }
+      })
     };
-
-    return new Response(JSON.stringify(result), { status: 200, headers });
   } catch (err) {
     console.error('[Pan synthesize]', err);
-    return new Response(JSON.stringify({
-      error: 'Synthesis failed',
-      message: err.message,
-      status: 'Pan hit an error while synthesizing.'
-    }), { status: 500, headers });
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: 'Synthesis failed',
+        message: err.message,
+        status: 'Pan hit an error while synthesizing.'
+      })
+    };
   }
 };
 
-export const config = {
-  path: '/api/synthesize'
-};
-
-// ------------------------------------------------------------------
-// Notion
-// ------------------------------------------------------------------
-async function fetchMemoryPalace(query) {
-  const token = Netlify.env.get('NOTION_TOKEN');
-  const databaseId = Netlify.env.get('NOTION_DATABASE_ID');
+async function fetchMemoryPalace() {
+  const token = process.env.NOTION_TOKEN;
+  const databaseId = process.env.NOTION_DATABASE_ID;
 
   if (!token || !databaseId) {
     return {
-      signals: [{ source: 'Memory Palace', text: '[stub] NOTION_TOKEN or NOTION_DATABASE_ID missing.' }],
+      signals: [{ source: 'Memory Palace', text: '[stub] Notion credentials missing.' }],
       warning: 'Notion credentials not configured',
-      note: 'set NOTION_TOKEN + NOTION_DATABASE_ID in Netlify env vars'
+      note: 'set NOTION_TOKEN + NOTION_DATABASE_ID'
     };
   }
 
@@ -134,10 +137,13 @@ async function fetchMemoryPalace(query) {
 
     const data = await res.json();
     const signals = (data.results || []).map(page => {
-      const title = extractNotionTitle(page);
+      const title = extractTitle(page);
       const type = page.properties?.Type?.select?.name || 'Entry';
       const status = page.properties?.Status?.select?.name || '';
-      return { source: 'Memory Palace', text: `${type}${status ? ` (${status})` : ''}: ${title}` };
+      return {
+        source: 'Memory Palace',
+        text: `${type}${status ? ` (${status})` : ''}: ${title}`
+      };
     });
 
     if (signals.length === 0) {
@@ -154,46 +160,41 @@ async function fetchMemoryPalace(query) {
   }
 }
 
-function extractNotionTitle(page) {
-  const titleProp = page.properties?.Name || page.properties?.title;
-  if (!titleProp) return 'Untitled';
-  const rich = titleProp.title || titleProp.rich_text || [];
+function extractTitle(page) {
+  const prop = page.properties?.Name || page.properties?.title;
+  if (!prop) return 'Untitled';
+  const rich = prop.title || prop.rich_text || [];
   return rich.map(t => t.plain_text).join('') || 'Untitled';
 }
 
-// ------------------------------------------------------------------
-// Linear
-// ------------------------------------------------------------------
 async function fetchLinearIssues() {
-  const apiKey = Netlify.env.get('LINEAR_API_KEY');
+  const apiKey = process.env.LINEAR_API_KEY;
 
   if (!apiKey) {
     return {
-      signals: [{ source: 'Linear', text: '[stub] LINEAR_API_KEY missing.' }],
+      signals: [{ source: 'Linear', text: '[stub] LINEAR_API_KEY not set yet.' }],
       warning: 'Linear credentials not configured',
-      note: 'set LINEAR_API_KEY in Netlify env vars'
+      note: 'set LINEAR_API_KEY'
     };
   }
 
   try {
-    const gql = `
-      query {
-        issues(
-          filter: {
-            project: { name: { containsIgnoreCase: "Pan" } }
-            state: { type: { nin: ["completed", "canceled"] } }
-          }
-          first: 8
-          orderBy: updatedAt
-        ) {
-          nodes {
-            identifier
-            title
-            state { name }
-          }
+    const query = `query {
+      issues(
+        filter: {
+          project: { name: { containsIgnoreCase: "Pan" } }
+          state: { type: { nin: ["completed", "canceled"] } }
+        }
+        first: 8
+        orderBy: updatedAt
+      ) {
+        nodes {
+          identifier
+          title
+          state { name }
         }
       }
-    `;
+    }`;
 
     const res = await fetch('https://api.linear.app/graphql', {
       method: 'POST',
@@ -201,7 +202,7 @@ async function fetchLinearIssues() {
         'Authorization': apiKey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query: gql })
+      body: JSON.stringify({ query })
     });
 
     if (!res.ok) {
@@ -213,13 +214,13 @@ async function fetchLinearIssues() {
     if (data.errors) throw new Error(data.errors[0]?.message || 'Linear GraphQL error');
 
     const nodes = data.data?.issues?.nodes || [];
-    const signals = nodes.map(issue => ({
+    const signals = nodes.map(i => ({
       source: 'Linear',
-      text: `${issue.identifier} [${issue.state?.name || '?'}] ${issue.title}`
+      text: `${i.identifier} [${i.state?.name || '?'}] ${i.title}`
     }));
 
     if (signals.length === 0) {
-      signals.push({ source: 'Linear', text: 'No open issues found in Pan project.' });
+      signals.push({ source: 'Linear', text: 'No open issues in Pan project.' });
     }
 
     return { signals };
@@ -233,22 +234,22 @@ async function fetchLinearIssues() {
 }
 
 function buildStatus(query, signals, notes) {
-  const liveCount = signals.filter(s => !s.text.startsWith('[stub]') && !s.text.startsWith('[error]')).length;
+  const live = signals.filter(s => !s.text.startsWith('[stub]') && !s.text.startsWith('[error]')).length;
   const base = query ? `Synthesis for "${query}".` : 'General status synthesis.';
-  return `${base} ${liveCount} live signal(s). ${notes.length ? notes.join(' · ') : ''}`.trim();
+  return `${base} ${live} live signal(s). ${notes.join(' · ')}`.trim();
 }
 
-function buildRecommendations(signals, tensions, notes) {
+function buildRecommendations(notes, tensions) {
   const recs = [];
-  if (notes.some(n => n.includes('NOTION'))) recs.push('1. Set NOTION_TOKEN and NOTION_DATABASE_ID in Netlify');
-  if (notes.some(n => n.includes('LINEAR'))) recs.push(`${recs.length + 1}. Set LINEAR_API_KEY in Netlify`);
-  if (tensions.length && recs.length === 0) {
-    recs.push('1. Review open Linear issues');
-    recs.push('2. Update or close any that are finished');
+  if (notes.some(n => n.includes('NOTION'))) {
+    recs.push('1. Notion credentials look incomplete – check env vars');
+  }
+  if (notes.some(n => n.includes('LINEAR'))) {
+    recs.push(`${recs.length + 1}. Add LINEAR_API_KEY for live tasks`);
   }
   if (recs.length === 0) {
-    recs.push('1. Organs are responding');
-    recs.push('2. Keep using the panel');
+    recs.push('1. Configured organs responded');
+    recs.push('2. Live data is flowing – keep using the panel');
   }
   return recs;
 }

@@ -1,36 +1,31 @@
-# Pan Backend (Netlify)
+# Pan Backend (Netlify Function)
 
-## Live site
-- Project: https://app.netlify.com/projects/pan-copilot
-- Primary URL: https://pan-copilot.netlify.app
-- Function endpoint (once deployed): https://pan-copilot.netlify.app/api/synthesize
-
-## What I already did for you
-1. Created the Netlify site `pan-copilot`
-2. Wrote the function in modern Netlify format (`netlify/functions/synthesize.js`)
-3. Added `netlify.toml` + redirect so `/api/synthesize` works
-4. Real Notion + Linear clients with graceful stubs
-
-## What still needs a human (secrets)
-I cannot see or set your private tokens. You only need to do this once:
-
-1. Open https://app.netlify.com/projects/pan-copilot
-2. Site configuration → Environment variables
-3. Add:
-   - `NOTION_TOKEN`
-   - `NOTION_DATABASE_ID`
-   - `LINEAR_API_KEY`
-4. Trigger a deploy (or connect the GitHub repo so every push deploys)
-
-## Connect the extension
-In `prototype/content.js` set:
-
-```js
-const PAN_API_URL = 'https://pan-copilot.netlify.app/api/synthesize';
+## Endpoint
+```
+POST https://pan-copilot-ajlp.netlify.app/.netlify/functions/synthesize
 ```
 
-Reload the extension → click 🧠.
+## What it does
+Gathers live context from:
+- Notion Memory Palace (Active + High priority)
+- Linear (open issues in Pan project) — when LINEAR_API_KEY is set
+- Current page title (always)
 
-## Notion / Linear reminders
-- Notion: create an internal integration, share the Memory Palace database with it, copy the database ID.
-- Linear: Settings → API → Personal API key.
+and returns the structured Context Synthesis format.
+
+## Environment variables on the Netlify site
+| Variable | Status |
+|----------|--------|
+| `NOTION_TOKEN` | Set |
+| `NOTION_DATABASE_ID` | Set |
+| `LINEAR_API_KEY` | Optional — add when ready |
+
+## Deploy
+The function lives at `netlify/functions/synthesize.js`.
+`netlify.toml` publishes `public/` and registers the functions folder.
+
+Link the GitHub repo `adjjvmorii26-png/pan-copilot` to the Netlify site (if not already) so every push deploys both the status page and the function.
+
+## Prototype
+`prototype/content.js` (v0.5) is already pointed at the live endpoint.
+Reload the unpacked extension after the function is deployed.
