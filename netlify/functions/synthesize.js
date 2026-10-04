@@ -1,7 +1,8 @@
 // Pan – Context Synthesis Backend (Netlify Function)
 // POST /.netlify/functions/synthesize
+// Version 0.5.1 – redeploy for env var pickup
 //
-// Env vars (already partially set):
+// Env vars:
 //   NOTION_TOKEN
 //   NOTION_DATABASE_ID
 //   LINEAR_API_KEY (optional)
@@ -75,7 +76,7 @@ exports.handler = async (event) => {
         recommendations,
         meta: {
           generatedAt: new Date().toISOString(),
-          version: '0.5.0',
+          version: '0.5.1',
           organsQueried: focus,
           live: {
             notion: Boolean(process.env.NOTION_TOKEN && process.env.NOTION_DATABASE_ID),
