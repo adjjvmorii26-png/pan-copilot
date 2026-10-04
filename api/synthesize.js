@@ -1,22 +1,18 @@
 // Pan Context Synthesis – Vercel Serverless Function
 // POST /api/synthesize
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
   try {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
-    }
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     let body = req.body;
     if (typeof body === 'string') {
-      try { body = JSON.parse(body || '{}'); } catch (_) { body = {}; }
+      try { body = JSON.parse(body || '{}'); } catch { body = {}; }
     }
     body = body || {};
 
@@ -63,7 +59,7 @@ module.exports = async (req, res) => {
       recommendations: buildRecs(notes),
       meta: {
         generatedAt: new Date().toISOString(),
-        version: '0.6.1-vercel',
+        version: '0.6.2-vercel',
         host: 'vercel',
         live: {
           notion: Boolean(process.env.NOTION_TOKEN && process.env.NOTION_DATABASE_ID),
@@ -75,10 +71,10 @@ module.exports = async (req, res) => {
     console.error('[Pan]', err);
     return res.status(500).json({
       error: 'Synthesis failed',
-      message: err && err.message ? err.message : String(err)
+      message: err?.message || String(err)
     });
   }
-};
+}
 
 async function fetchMemoryPalace() {
   const token = process.env.NOTION_TOKEN;

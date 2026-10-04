@@ -1,6 +1,4 @@
 {
-  "name": "pan-synthesize-api",
-  "version": "0.3.0",
-  "private": true,
-  "type": "module"
+  "name": "pan-api",
+  "private": true
 }
