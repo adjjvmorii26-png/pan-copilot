@@ -15,6 +15,7 @@ Living skill definitions that Pan loads, executes, and mutates.
 | [Resonance Check](./resonance-check.md) | Test if something still feels alive | v1.0 |
 | [Micro-Commitment](./micro-commitment.md) | Shrink any intention to a <2-min action | v1.0 |
 | [Absurdity Amplifier](./absurdity-amplifier.md) | Push ideas into the ridiculous to find spark | v1.0 |
+| [Netlify Deploy](./netlify-deploy.md) | Deploy sites/apps via Netlify AI agent path | v1.0 |
 
 ## Evolution Protocol
 1. Any skill can propose a mutation after use.
@@ -22,16 +23,7 @@ Living skill definitions that Pan loads, executes, and mutates.
 3. Every skill evolution is also logged as an "Evolution" entry in the Notion Memory Palace.
 4. Prefer small, high-signal upgrades.
 
-## Experimental Notes (2026-10-04)
-Three new skills imported from the broader experimental skill family:
-- Resonance Check
-- Micro-Commitment
-- Absurdity Amplifier
-
-These are intentionally lightweight and high-leverage. They can be mutated further as Pan uses them.
-
-## Audit Snapshot (2026-10-04)
-- Core skills remain solid
-- Backend wiring still paused by design
-- Panel v0.4 is the current best user-facing surface
-- Highest leverage remaining: resume live organs when ready, or keep evolving skills & panel
+## Notes
+- Backend organ wiring remains paused by user choice.
+- New capability (2026-10-04): Netlify Deploy skill based on `fetch https://netlify.ai`.
+- Skills that rely on live Notion/Linear data gracefully degrade to mock or connector-based operation.
