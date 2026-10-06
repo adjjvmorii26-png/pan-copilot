@@ -18,13 +18,13 @@ Living skill definitions that Pan loads, executes, and mutates.
 | [Netlify Deploy](./netlify-deploy.md) | Deploy via Netlify agent path | v1.0 |
 | [Pattern Sense](./pattern-sense.md) | Recurring patterns across sessions | v1.0 |
 | [Bottleneck Finder](./bottleneck-finder.md) | Single constraint limiting progress | v1.0 |
-| [Ritual Oracle](./ritual-oracle.md) | Ceremony: bottleneck + one move only | **v1.0** |
+| [Ritual Oracle](./ritual-oracle.md) | Ceremony: bottleneck + one move only | v1.0 |
+| [Time Sense](./time-sense.md) | Calendar / schedule awareness | **v1.0** |
 
-## Creative modes
-See [docs/CREATIVE-USES.md](../docs/CREATIVE-USES.md) for unconventional rituals (Dual-Lens, Page Haunt, Moodboard Linear, Skill Breeding, Negative-Space Pilot, …).
+## Organs (runtime)
+- Notion Memory Palace — live
+- Linear — live
+- Calendar — ICS via `CALENDAR_ICS_URL` (+ Grok connector in chat)
+- Browser panel — v0.6+
 
-## Evolution Protocol
-1. Mutate after friction.
-2. Commit high-signal upgrades.
-3. Log Evolution in Memory Palace.
-4. Prefer small upgrades over sprawl.
+See [docs/CALENDAR.md](../docs/CALENDAR.md).
