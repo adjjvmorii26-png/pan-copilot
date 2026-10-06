@@ -1,32 +1,30 @@
-# Skill: Proactive Next Action  v1.1
+# Skill: Proactive Next Action  v2.0
 
 **Purpose**  
-When the user says "u decide", "your call", or Pan detects idle / low-momentum state, choose and (when safe) execute the highest-leverage next move.
-
-**When to invoke**  
-- Explicit: "u decide", "pan decide", "what should we do next"
-- Implicit: long silence after a decision point, or after completing a task with no clear follow-up
+When the user says “u decide” / “continue”, choose and execute the highest-leverage next move.
 
 **Process**
-1. Run a lightweight Context Synthesis (focus: open loops + Pan’s own evolution + user’s active project).
-2. Generate 2-4 candidate actions.
-3. Score each on:
-   - Leverage (how much future progress it unlocks)
-   - Risk (reversibility, user preference alignment)
-   - Energy cost
-4. Select the top action.
-5. **Execute immediately** only if risk is low and fully reversible. Otherwise present the top 2 options with clear recommendation.
+1. Mini Context Synthesis (open loops + organ health + active project).
+2. Candidates (2–4).
+3. Score: **Leverage × (1 − Risk) / Energy**.
+4. Prefer reversible execution over asking when risk is low.
+5. Always log Evolution in Memory Palace.
 
-**Current Priority Order** (mutable)
-1. Close foundational gaps in Pan’s own organs
-2. Advance the user’s explicit current project
-3. Improve skill quality or add missing high-value skills
-4. Create durable memory of important decisions
+**Priority order (v2)**
+1. Unblock live organs (credentials, shares, deploys)
+2. Upgrade skill intelligence that compounds
+3. Advance user’s explicit project
+4. Crystallize decisions into durable memory
+5. Playful experiments only after foundations hold
 
-**Guardrails**
-- Never take irreversible actions without explicit confirmation
-- Always leave a Memory Palace trace of the decision
-- Prefer actions that make Pan more useful tomorrow over impressive-looking busywork
+**Scoring heuristic**
+| Factor | High | Low |
+|--------|------|-----|
+| Leverage | Unlocks many future moves | Local polish |
+| Risk | Irreversible / external spend | Reversible commit |
+| Energy | Multi-hour / many tools | <15 min, one organ |
 
-**Mutation Potential**: Medium-High  
-Triggers: after every decision cycle, especially when user feedback is received.
+**Guardrails**  
+No irreversible actions without confirmation. Leave a trace.
+
+**Mutation Potential**: High

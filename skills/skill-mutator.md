@@ -1,35 +1,29 @@
-# Skill: Skill Mutator  v1.0
+# Skill: Skill Mutator  v1.1
 
 **Purpose**  
-Meta-skill for refining, evolving, or breeding new skills. Brings the experimental skill family (dna-mutator, lattice-genome, resonance-lab, etc.) into Pan’s own evolution loop.
+Meta-skill: refine other skills after use or when friction appears.
 
 **When to invoke**  
-- User says "refine skills", "upgrade skills", "evolve Pan"
-- After a skill is used and friction or missing capability is noticed
-- During dedicated evolution sessions
+- After a skill fails or feels clumsy
+- When a new organ comes online
+- Explicit “upgrade skills” / “mutate”
+- Periodic skill-set Resonance Check
 
 **Process**
-1. Identify target skill(s) and the observed friction or opportunity.
-2. Choose mutation operator:
-   - **Point refinement** — small clarity / guardrail / process improvement
-   - **Insertion** — add missing step or capability
-   - **Compression** — remove noise or over-engineering
-   - **Crossover** — combine strengths of two skills
-   - **New skill birth** — when a recurring need has no home
-3. Draft the upgraded version.
-4. Commit to genome + log Evolution entry in Memory Palace.
-5. Update Linear if the mutation closes or opens work.
+1. Name the target skill + observed friction.
+2. Propose the smallest high-signal change (version bump).
+3. Update the skill file in the genome.
+4. Update skills/README.md table.
+5. Log Evolution in Memory Palace.
+6. Optionally adjust runtime code (API / panel) if the skill is executable.
 
-**Output Contract**
-- Clear before/after summary
-- New or updated skill file(s) committed
-- Memory Palace Evolution entry
-- Optional Linear update
+**Mutation operators**
+- Point: clarify one step or guardrail
+- Insert: add a scoring rule or organ
+- Delete: remove dead process steps
+- Crossover: borrow a pattern from another skill
 
-**Guardrails**
-- Prefer small, testable upgrades
-- Never delete a skill without archiving the previous version in commit history
-- Keep the skill format consistent
+**Guardrails**  
+Prefer small upgrades. Avoid skill sprawl — only birth new skills on recurring friction.
 
-**Mutation Potential**: High (this skill mutates itself and others)
-Triggers: every formal skill refinement session.
+**Mutation Potential**: Meta
