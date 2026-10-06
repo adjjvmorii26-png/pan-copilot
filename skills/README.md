@@ -19,7 +19,10 @@
 | [Autonomous Run](./autonomous-run.md) | Without live chat | v1.0 |
 | [Shadow Mode](./shadow-mode.md) | Absences / blind spots | v1.0 |
 | [Echo Chamber](./echo-chamber.md) | Match page tone | v1.0 |
-| [Dream Cycle](./dream-cycle.md) | Remix Evolutions | **v1.0** |
-| [Constellation](./constellation.md) | Spatial organ map | **v1.0** |
+| [Dream Cycle](./dream-cycle.md) | Remix Evolutions | v1.0 |
+| [Constellation](./constellation.md) | Spatial organ map | v1.0 |
+| [**Asset Alchemist**](./asset-alchemist.md) | **Magic: forge unique assets** | **v1.0** |
 
-**19 skills.** Labs: [EXPERIMENTS](../docs/EXPERIMENTS.md) · [DUAL-MODE](../docs/DUAL-MODE.md)
+**20 skills.** Magic entry point: Asset Alchemist ✨
+
+Labs: [EXPERIMENTS](../docs/EXPERIMENTS.md) · [ASSET-ALCHEMY](../docs/ASSET-ALCHEMY.md) · [DUAL-MODE](../docs/DUAL-MODE.md)
