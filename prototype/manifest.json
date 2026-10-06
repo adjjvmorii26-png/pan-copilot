@@ -1,19 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Pan – Panoptic Co-Pilot",
-  "version": "0.7.0",
-  "description": "Real-time distributed AI helper. Memory Palace + Linear + Calendar organs.",
+  "version": "0.8.0",
+  "description": "Distributed AI co-pilot. Synth · Oracle · Shadow · Heartbeat.",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["http://localhost/*", "https://*.vercel.app/*", "https://*.netlify.app/*"],
-  "background": {
-    "service_worker": "background.js"
-  },
+  "background": { "service_worker": "background.js" },
   "content_scripts": [{
     "matches": ["<all_urls>"],
     "js": ["content.js"],
     "run_at": "document_idle"
   }],
-  "action": {
-    "default_title": "Pan"
-  }
+  "action": { "default_title": "Pan" }
 }

@@ -20,7 +20,10 @@ Living skill definitions that Pan loads, executes, and mutates.
 | [Bottleneck Finder](./bottleneck-finder.md) | Single constraint limiting progress | v1.0 |
 | [Ritual Oracle](./ritual-oracle.md) | Ceremony: bottleneck + one move only | v1.0 |
 | [Time Sense](./time-sense.md) | Calendar / schedule awareness | v1.0 |
-| [Autonomous Run](./autonomous-run.md) | Operate without live chat | **v1.0** |
+| [Autonomous Run](./autonomous-run.md) | Operate without live chat | v1.0 |
+| [Shadow Mode](./shadow-mode.md) | Synthesize absences / blind spots | **v1.0** |
+| [Echo Chamber](./echo-chamber.md) | Match page tone in voice | **v1.0** |
 
-## Dual mode
-See [docs/DUAL-MODE.md](../docs/DUAL-MODE.md) — **With Grok** vs **Alone** (panel / API / scheduled).
+## Labs
+- [docs/EXPERIMENTS.md](../docs/EXPERIMENTS.md) — playground ideas
+- [docs/DUAL-MODE.md](../docs/DUAL-MODE.md) — with Grok vs alone
