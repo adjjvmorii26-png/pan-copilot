@@ -1,8 +1,15 @@
-# Pan Skills (23)
+# Pan Skills
 
-Core: Context Synthesis · Oracle · Shadow · Bottleneck · Autonomous Run · Asset Alchemist  
-Sense: Time · Echo · Pattern · Dream · Constellation · **Signal Compost**  
-Hands: LLM Bridge · OpenCode Hands  
-Meta: Skill Mutator · Resonance · Micro-Commitment · Absurdity Amplifier
+## Builders (meta)
+| Builder | Role |
+|---------|------|
+| [Skill Breeder](./builders/skill-breeder.md) | Crossover / mutation of skills |
+| [Skill Auditor](./builders/skill-auditor.md) | Alive / Stale / Compost |
+| [Legacy Curator](./builders/legacy-curator.md) | Promote Legendary artifacts |
+| [Constraint Forge](./builders/constraint-forge-pan.md) | One constraint before build |
 
-See full table in git history / individual files. Labs: [EXPERIMENTS](../docs/EXPERIMENTS.md).
+## Operational (selected)
+Oracle · Shadow · Synth · Compost · Asset Alchemist · LLM Bridge · OpenCode Hands · Dream · Autonomous Run · Resonance · …
+
+**Legacy vault:** [docs/legacy/](../docs/legacy/)  
+**Labs:** [EXPERIMENTS](../docs/EXPERIMENTS.md)
