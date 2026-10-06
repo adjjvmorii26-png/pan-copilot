@@ -21,8 +21,8 @@
 | [Echo Chamber](./echo-chamber.md) | Match page tone | v1.0 |
 | [Dream Cycle](./dream-cycle.md) | Remix Evolutions | v1.0 |
 | [Constellation](./constellation.md) | Spatial organ map | v1.0 |
-| [**Asset Alchemist**](./asset-alchemist.md) | **Magic: forge unique assets** | **v1.0** |
+| [Asset Alchemist](./asset-alchemist.md) | Magic: forge assets | v1.0 |
+| [**LLM Bridge**](./llm-bridge.md) | Ollama / OmniRoute / OpenAI-compat | **v1.0** |
+| [**OpenCode Hands**](./opencode-hands.md) | Coding agent on genome | **v1.0** |
 
-**20 skills.** Magic entry point: Asset Alchemist ✨
-
-Labs: [EXPERIMENTS](../docs/EXPERIMENTS.md) · [ASSET-ALCHEMY](../docs/ASSET-ALCHEMY.md) · [DUAL-MODE](../docs/DUAL-MODE.md)
+**22 skills.** Free LLM docs: [LLM-ORGANS](../docs/LLM-ORGANS.md) · Connectors: [CONNECTORS](../docs/CONNECTORS.md)
