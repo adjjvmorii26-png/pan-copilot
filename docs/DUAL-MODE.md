@@ -1,31 +1,49 @@
-# Pan dual mode: with you and alone
+# Pan Dual-Mode: With You + Alone
+
+Pan is designed to operate in **two modes** that share the same organs.
 
 ```
-                 ┌─────────────┐
-                 │   Human     │
-                 └──────┬──────┘
-          with Grok     │      solo
-     ┌──────────────────┼──────────────────┐
-     ▼                  ▼                  ▼
-  Grok chat      Morning automation   Browser panel
-  + connectors   (pan-morning-oracle)  + service worker
-     │                  │                  │
-     └────────────┬─────┴──────────────────┘
-                  ▼
-         Organs (Notion / Linear / Calendar / GitHub)
-                  ▲
-                  │
-            Vercel /api/synthesize
+                 ┌─────────────────────┐
+                 │   Organs (shared)   │
+                 │ Notion · Linear     │
+                 │ Calendar · GitHub   │
+                 │ Vercel /api         │
+                 └──────────┬──────────┘
+            ┌───────────────┴───────────────┐
+            │                               │
+   ┌────────▼────────┐            ┌─────────▼────────┐
+   │  WITH GROK      │            │  ALONE           │
+   │  (this chat)    │            │                  │
+   │  · Connectors   │            │  · Browser panel │
+   │  · Deep work    │            │  · Synth / Oracle│
+   │  · Mutations    │            │  · API v0.8      │
+   │  · Experiments  │            │  · Automations   │
+   └─────────────────┘            └──────────────────┘
 ```
 
-## Solo schedule
-- Name: `pan-morning-oracle`
-- When: daily 09:00 America/New_York
-- Does: synthesize → log Memory Palace → short notify
+## Mode A — With Grok (you + Pan)
+- Full connector suite (Notion write, Linear, Calendar create, GitHub push)
+- Skill mutation, experiments, Dual-Lens, breeding
+- Setup that needs judgment or secrets
 
-## Solo browser
-- Alarm every 2h while Chrome runs
-- Caches last synth; badge `!` if bottleneck
+## Mode B — Alone (no chat required)
+| Surface | What runs |
+|---------|-----------|
+| **Browser panel** v0.7 | Synth / Oracle on any page → hits Vercel API |
+| **API** | `POST /api/synthesize` reads organs directly |
+| **Scheduled automation** | `pan-morning-oracle` daily 09:00 America/New_York |
 
-## With Grok
-- Full creative + engineering loop in this conversation
+Alone mode **can**: read Memory Palace, read Linear, score signals, name bottleneck, recommend one move, log scheduled Evolutions (via automation).
+
+Alone mode **cannot** (yet): invent new skills, push GitHub, or share Notion integrations — those stay With-Grok.
+
+## Autonomy rules
+1. Prefer reversible actions when alone.
+2. Always leave a Memory Palace trace for scheduled runs.
+3. Never spend money or delete data without With-Grok confirmation.
+4. If organs fail, report the failure — don’t hallucinate signals.
+
+## Enabling more alone-power
+- Panel: already live after load unpacked
+- Calendar alone: set `CALENDAR_ICS_URL` on Vercel
+- Schedule: Automations → `pan-morning-oracle`

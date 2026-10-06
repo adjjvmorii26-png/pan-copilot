@@ -19,12 +19,8 @@ Living skill definitions that Pan loads, executes, and mutates.
 | [Pattern Sense](./pattern-sense.md) | Recurring patterns across sessions | v1.0 |
 | [Bottleneck Finder](./bottleneck-finder.md) | Single constraint limiting progress | v1.0 |
 | [Ritual Oracle](./ritual-oracle.md) | Ceremony: bottleneck + one move only | v1.0 |
-| [Time Sense](./time-sense.md) | Calendar / schedule awareness | **v1.0** |
+| [Time Sense](./time-sense.md) | Calendar / schedule awareness | v1.0 |
+| [Autonomous Run](./autonomous-run.md) | Operate without live chat | **v1.0** |
 
-## Organs (runtime)
-- Notion Memory Palace — live
-- Linear — live
-- Calendar — ICS via `CALENDAR_ICS_URL` (+ Grok connector in chat)
-- Browser panel — v0.6+
-
-See [docs/CALENDAR.md](../docs/CALENDAR.md).
+## Dual mode
+See [docs/DUAL-MODE.md](../docs/DUAL-MODE.md) — **With Grok** vs **Alone** (panel / API / scheduled).
