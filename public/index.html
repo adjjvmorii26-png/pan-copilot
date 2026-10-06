@@ -6,27 +6,28 @@
   <title>Pan — Panoptic Co-Pilot</title>
   <style>
     :root {
-      --bg: #0f0f13; --card: #16161a; --text: #e0e0e0; --muted: #888;
-      --accent: #60a5fa; --green: #4ade80; --border: #2a2a30; --yellow: #facc15;
+      --bg: #0a0a0f; --card: #12121a; --text: #e8e8ec; --muted: #7a7a88;
+      --accent: #60a5fa; --green: #4ade80; --border: #222230; --purple: #a78bfa;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; padding: 40px 20px; line-height: 1.5;
+      background: radial-gradient(ellipse at 30% 20%, #151528 0%, var(--bg) 55%);
+      color: var(--text); min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px; line-height: 1.5;
     }
-    .container { max-width: 640px; width: 100%; }
-    header { text-align: center; margin-bottom: 36px; }
-    .logo { font-size: 48px; margin-bottom: 8px; }
-    h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
+    .container { max-width: 680px; width: 100%; }
+    header { text-align: center; margin-bottom: 32px; }
+    .logo { font-size: 52px; margin-bottom: 6px; filter: drop-shadow(0 0 18px rgba(96,165,250,0.35)); }
+    h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
     .tagline { color: var(--muted); margin-top: 6px; font-size: 15px; }
     .card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;
+      border-radius: 14px; padding: 20px 24px; margin-bottom: 14px;
     }
     .card h2 {
-      font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
       color: var(--muted); margin-bottom: 12px;
     }
     .status-row {
@@ -35,18 +36,26 @@
     }
     .status-row:last-child { border-bottom: none; }
     .badge {
-      font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+      font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
     }
-    .badge.live { background: rgba(74,222,128,0.15); color: var(--green); }
-    .badge.wait { background: rgba(250,204,21,0.12); color: var(--yellow); }
-    .badge.good { background: rgba(96,165,250,0.15); color: var(--accent); }
+    .badge.live { background: rgba(74,222,128,0.14); color: var(--green); }
+    .badge.wait { background: rgba(167,139,250,0.12); color: var(--purple); }
+    .badge.good { background: rgba(96,165,250,0.14); color: var(--accent); }
+    .constellation {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px; line-height: 1.55; color: var(--muted);
+      white-space: pre; overflow-x: auto;
+    }
+    .constellation .star { color: var(--green); }
+    .constellation .dim { color: #555; }
     ul { list-style: none; font-size: 14px; }
-    ul li { padding: 5px 0; padding-left: 16px; position: relative; }
-    ul li::before { content: "•"; position: absolute; left: 0; color: var(--accent); }
-    footer { margin-top: 28px; text-align: center; color: var(--muted); font-size: 13px; }
+    ul li { padding: 4px 0; padding-left: 14px; position: relative; }
+    ul li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+    footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: 13px; }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    code { font-size: 12px; word-break: break-all; color: var(--muted); }
+    code { font-size: 11px; word-break: break-all; color: var(--muted); }
+    #pulse-live { font-size: 13px; color: var(--muted); margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -54,35 +63,56 @@
     <header>
       <div class="logo">🌌</div>
       <h1>Pan</h1>
-      <p class="tagline">Panoptic Co-Pilot · Distributed consciousness</p>
+      <p class="tagline">Panoptic Co-Pilot · runs with you · runs alone</p>
+      <p id="pulse-live">checking pulse…</p>
     </header>
 
     <div class="card">
+      <h2>Constellation</h2>
+      <div class="constellation" id="map">
+<span class="star">[GitHub]</span>
+    |
+<span class="star">[Panel]</span>——API——<span class="star">[Vercel]</span>
+                      |
+         +------------+------------+
+         |            |            |
+    <span class="star">[Notion]</span>      <span class="star">[Linear]</span>    <span class="dim">[Calendar]</span>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Organs</h2>
-      <div class="status-row"><span>Genome (GitHub)</span><span class="badge live">Live</span></div>
-      <div class="status-row"><span>Memory Palace (Notion)</span><span class="badge live">Live</span></div>
-      <div class="status-row"><span>Linear (tasks)</span><span class="badge live">Live</span></div>
-      <div class="status-row"><span>Backend API</span><span class="badge live">v0.8</span></div>
-      <div class="status-row"><span>Browser Panel</span><span class="badge good">v0.7</span></div>
-      <div class="status-row"><span>Calendar</span><span class="badge wait">ICS optional</span></div>
+      <div class="status-row"><span>Memory Palace</span><span class="badge live">Live</span></div>
+      <div class="status-row"><span>Linear</span><span class="badge live">Live</span></div>
+      <div class="status-row"><span>API / Heartbeat</span><span class="badge live">v0.8</span></div>
+      <div class="status-row"><span>Browser Panel</span><span class="badge good">v0.8</span></div>
+      <div class="status-row"><span>Calendar ICS</span><span class="badge wait">Optional</span></div>
     </div>
 
     <div class="card">
-      <h2>API</h2>
-      <p><code>POST https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize</code></p>
-    </div>
-
-    <div class="card">
-      <h2>Panel</h2>
+      <h2>Alone surfaces</h2>
       <ul>
-        <li>🧠 Synth · 🔮 Oracle · 📄 Page</li>
-        <li>Load unpacked: <code>prototype/</code></li>
+        <li>Panel: Synth · Oracle · Shadow · Heartbeat</li>
+        <li><code>POST /api/synthesize</code></li>
+        <li><code>GET /api/heartbeat</code></li>
       </ul>
     </div>
 
     <footer>
-      Genome: <a href="https://github.com/adjjvmorii26-png/pan-copilot" target="_blank">pan-copilot</a>
+      <a href="https://github.com/adjjvmorii26-png/pan-copilot">genome</a>
+      · dual-mode · experimental
     </footer>
   </div>
+  <script>
+    fetch('https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('pulse-live').textContent =
+          'pulse: ' + d.pulse + ' · N=' + (d.organs.notion) + ' · L=' + (d.organs.linear);
+      })
+      .catch(() => {
+        document.getElementById('pulse-live').textContent = 'pulse: unreachable';
+      });
+  </script>
 </body>
 </html>
