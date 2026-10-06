@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ollama/llama3.2",
+  "small_model": "ollama/llama3.2",
+  "instructions": ["AGENT.md"],
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama",
+      "options": {
+        "baseURL": "http://localhost:11434/v1",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "llama3.2": {
+          "name": "Llama 3.2"
+        }
+      }
+    }
+  }
+}
