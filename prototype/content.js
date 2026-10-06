@@ -1,5 +1,5 @@
-// Pan Co-Pilot – Content Script v0.6
-// Backend: Vercel (primary) with Netlify fallback
+// Pan Co-Pilot – Content Script v0.7
+// Organs: Notion + Linear + Calendar (ICS) via Vercel API v0.8
 
 (function () {
   if (window.panInjected) return;
@@ -17,15 +17,16 @@
     <div id="pan-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:move;user-select:none;">
       <div style="font-weight:600;display:flex;align-items:center;gap:6px;"><span>🌌</span> <span>Pan</span></div>
       <div style="display:flex;gap:4px;align-items:center;">
-        <span id="pan-status" style="font-size:11px;opacity:0.55;">v0.6</span>
+        <span id="pan-status" style="font-size:11px;opacity:0.55;">v0.7</span>
         <button id="pan-min" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:0 4px;">–</button>
         <button id="pan-close" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:0 4px;">×</button>
       </div>
     </div>
     <div id="pan-body">
-      <div id="pan-chat" style="height:220px;overflow-y:auto;font-size:13px;margin-bottom:8px;border:1px solid #333;padding:10px;border-radius:8px;background:#16161a;"></div>
+      <div id="pan-chat" style="height:230px;overflow-y:auto;font-size:13px;margin-bottom:8px;border:1px solid #333;padding:10px;border-radius:8px;background:#16161a;"></div>
       <div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;">
         <button class="pan-quick" data-action="synth">🧠 Synth</button>
+        <button class="pan-quick" data-action="oracle">🔮 Oracle</button>
         <button class="pan-quick" data-action="page">📄 Page</button>
         <button class="pan-quick" data-action="help">?</button>
       </div>
@@ -37,7 +38,7 @@
     </div>
   `;
   Object.assign(panel.style, {
-    position: 'fixed', bottom: '20px', right: '20px', width: '340px',
+    position: 'fixed', bottom: '20px', right: '20px', width: '350px',
     background: '#0f0f13', color: '#e0e0e0', border: '1px solid #333',
     borderRadius: '14px', padding: '12px', zIndex: 2147483647,
     fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -63,7 +64,7 @@
     chat.appendChild(p);
     chat.scrollTop = chat.scrollHeight;
   }
-  addMsg('Pan', 'v0.6 · Vercel backend primary. Click 🧠 for live synthesis.', true);
+  addMsg('Pan', 'v0.7 · Memory + Linear live · 🔮 Oracle = bottleneck only', true);
 
   const header = document.getElementById('pan-header');
   let dragging = false, sx, sy, sl, st;
@@ -91,22 +92,41 @@
     panel.remove(); window.panInjected = false;
   };
 
-  function renderSynthesis(data) {
-    let html = `<strong>Status</strong><br>${data.status || ''}<br><br>`;
-    if (data.signals?.length) {
-      html += `<strong>Signals</strong><br>` + data.signals.map(s => `• <span style="opacity:0.7">[${s.source}]</span> ${s.text}`).join('<br>') + '<br><br>';
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderSynthesis(data, oracleMode) {
+    if (oracleMode) {
+      const bn = data.meta?.bottleneck || 'None — organs clear';
+      const rec = (data.recommendations && data.recommendations[0]) || 'Act on top signal';
+      addMsg('Pan', `<strong>🔮 Oracle</strong><br><br><strong>Bottleneck</strong><br>${esc(bn)}<br><br><strong>One move</strong><br>${esc(rec)}`);
+      return;
     }
-    if (data.tensions?.length) html += `<strong>Tensions</strong><br>` + data.tensions.map(t => `• ${t}`).join('<br>') + '<br><br>';
-    if (data.recommendations?.length) html += `<strong>Next</strong><br>` + data.recommendations.join('<br>');
-    if (data.meta?.live) html += `<br><span style="font-size:11px;opacity:0.5">host=${data.meta.host || '?'} notion=${data.meta.live.notion} linear=${data.meta.live.linear}</span>`;
+    let html = `<strong>Status</strong><br>${esc(data.status || '')}<br><br>`;
+    if (data.signals?.length) {
+      html += `<strong>Signals</strong><br>` + data.signals.map(s =>
+        `• <span style="opacity:0.7">[${esc(s.source)}]</span> ${esc(s.text)}`
+      ).join('<br>') + '<br><br>';
+    }
+    if (data.tensions?.length) {
+      html += `<strong>Tensions</strong><br>` + data.tensions.map(t => `• ${esc(t)}`).join('<br>') + '<br><br>';
+    }
+    if (data.recommendations?.length) {
+      html += `<strong>Next</strong><br>` + data.recommendations.map(esc).join('<br>');
+    }
+    if (data.meta?.live) {
+      const L = data.meta.live;
+      html += `<br><span style="font-size:11px;opacity:0.5">v${esc(data.meta.version)} · N=${L.notion} L=${L.linear} C=${L.calendar}</span>`;
+    }
     addMsg('Pan', html);
   }
 
-  async function runContextSynthesis(query) {
-    statusEl.textContent = 'synthesizing…';
-    addMsg('Pan', 'Running live Context Synthesis…', true);
+  async function runContextSynthesis(query, oracleMode) {
+    statusEl.textContent = oracleMode ? 'oracle…' : 'synthesizing…';
+    addMsg('Pan', oracleMode ? 'Ritual Oracle…' : 'Live Context Synthesis…', true);
     const payload = {
-      query: query || '',
+      query: query || (oracleMode ? 'oracle' : ''),
       pageTitle: document.title,
       pageUrl: location.href,
       focus: ['memory', 'tasks', 'calendar']
@@ -121,34 +141,36 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || data.error || 'HTTP ' + res.status);
-        renderSynthesis(data);
-        statusEl.textContent = 'v0.6';
+        renderSynthesis(data, oracleMode);
+        statusEl.textContent = 'v0.7';
         return;
       } catch (err) {
         lastErr = err;
       }
     }
-    addMsg('Pan', `All backends failed: ${lastErr?.message || 'unknown'}`);
-    statusEl.textContent = 'v0.6';
+    addMsg('Pan', `All backends failed: ${esc(lastErr?.message || 'unknown')}`);
+    statusEl.textContent = 'v0.7';
   }
 
   function pageHelp() {
     const sel = window.getSelection()?.toString().trim().slice(0, 200);
-    let msg = `<strong>Page</strong><br>${document.title}<br><span style="opacity:0.6;font-size:12px">${location.href}</span>`;
-    if (sel) msg += `<br><br><strong>Selected</strong><br>"${sel}"`;
+    let msg = `<strong>Page</strong><br>${esc(document.title)}<br><span style="opacity:0.6;font-size:12px">${esc(location.href)}</span>`;
+    if (sel) msg += `<br><br><strong>Selected</strong><br>"${esc(sel)}"`;
     addMsg('Pan', msg);
   }
   function showHelp() {
-    addMsg('Pan', `🧠 Synth = live multi-organ briefing<br>📄 Page = current tab<br>Drag header · – minimize · × hide`);
+    addMsg('Pan', `🧠 Synth = full multi-organ briefing<br>🔮 Oracle = bottleneck + one move<br>📄 Page = tab context<br>Try: status · agenda · oracle`);
   }
 
   async function process(q) {
-    addMsg('You', q);
+    addMsg('You', esc(q));
     const lower = q.toLowerCase();
-    if (lower.includes('synth') || lower.includes('status') || lower.includes('overview')) return runContextSynthesis(q);
+    if (lower.includes('oracle') || lower.includes('bottleneck')) return runContextSynthesis(q, true);
+    if (lower.includes('synth') || lower.includes('status') || lower.includes('overview') || lower.includes('agenda'))
+      return runContextSynthesis(q, false);
     if (lower.includes('page') || lower.includes('current')) return pageHelp();
     if (lower === 'help' || lower === '?') return showHelp();
-    addMsg('Pan', `Got it. Backend online. Page: <em>${document.title}</em>`);
+    return runContextSynthesis(q, false);
   }
 
   document.getElementById('pan-send').onclick = () => {
@@ -159,7 +181,8 @@
   document.querySelectorAll('.pan-quick').forEach(btn => {
     btn.onclick = () => {
       const a = btn.dataset.action;
-      if (a === 'synth') runContextSynthesis();
+      if (a === 'synth') runContextSynthesis('', false);
+      if (a === 'oracle') runContextSynthesis('oracle', true);
       if (a === 'page') pageHelp();
       if (a === 'help') showHelp();
     };

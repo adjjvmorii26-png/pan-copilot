@@ -1,20 +1,25 @@
-# Pan Browser Prototype (v0.3)
+# Pan Browser Prototype (v0.7)
 
-Floating real-time panel that injects into any webpage.
+Floating real-time panel on any webpage.
 
-## What's new in v0.3
-- Background service worker stub ready for message passing
-- Clear architecture document for wiring real organs
-- Host permissions prepared for a future Vercel/Netlify backend
-- Manifest bumped
+## Load
+1. `chrome://extensions` → Developer mode
+2. Load unpacked → this `prototype` folder
+3. Reload extension after pulls
 
-## Load it
-1. Open `chrome://extensions`
-2. Enable Developer mode
-3. Load unpacked → select this `prototype` folder
-4. Click the 🧠 button inside any page for a synthesis (currently mock)
+## Buttons
+| Control | Action |
+|---------|--------|
+| 🧠 Synth | Full multi-organ briefing |
+| 🔮 Oracle | Bottleneck + one move only |
+| 📄 Page | Current tab / selection |
+| 🎙️ | Speech input (if available) |
 
-## Next
-See `/docs/ARCHITECTURE.md` for the plan to connect Memory Palace + Linear + Calendar.
+## Backend
+Primary: `https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize`  
+API v0.8 · Notion + Linear live · Calendar via ICS optional
 
-The content script is deliberately structured so the mock can be swapped for a real `fetch` to the backend with minimal changes.
+## Organs
+- Memory Palace ✅
+- Linear ✅
+- Calendar ⏳ set `CALENDAR_ICS_URL` for auto agenda
