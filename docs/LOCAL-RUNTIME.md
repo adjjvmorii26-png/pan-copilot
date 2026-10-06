@@ -62,7 +62,31 @@ cd pan-copilot && opencode
   the same as OpenCode loading an `AGENTS.md`.
 - The `LLM_*` exports above are for **other tools/bridges** that speak the
   OpenAI protocol; `opencode.json` pins the same values itself, so OpenCode
-  works even without them.
+  works even without them. Where those exports can point is the next section.
+
+## Reach: local bridge vs. Vercel
+
+`LLM_BASE_URL=http://localhost:11434/v1` only resolves **on the machine running
+Ollama** — that is the local bridge, for local tools (OpenCode, CLIs, scripts).
+
+- **Vercel cannot reach your localhost Ollama.** Functions under `api/` execute
+  in Vercel's cloud; `localhost` there is Vercel's own sandbox, not your
+  machine. (`api/synthesize.js` is rule-based today — no LLM calls — so
+  nothing breaks yet. This matters the moment a deployed function or tool
+  calls a model.)
+- **On Vercel**, point `LLM_BASE_URL` at a public or self-hosted
+  [OmniRoute](https://github.com/diegosouzapw/OmniRoute) URL instead — the
+  OpenAI-compatible gateway, e.g. `https://<your-omniroute-host>/v1` — and set
+  `LLM_API_KEY` to that gateway's key. Configure both as Vercel environment
+  variables, never in code.
+- A machine with no Ollama at all (e.g. a phone shell) can use the same
+  OmniRoute URL as its `baseURL` in `opencode.json`, or go through OmniRoute's
+  official [`@omniroute/opencode-provider`](https://www.npmjs.com/package/@omniroute/opencode-provider).
+
+| Where | `LLM_BASE_URL` | `LLM_API_KEY` |
+|-------|----------------|---------------|
+| Local tools (machine with Ollama) | `http://localhost:11434/v1` | `ollama` (ignored) |
+| Vercel functions | `https://<your-omniroute-host>/v1` | gateway key |
 
 ## Verify the bridge
 
