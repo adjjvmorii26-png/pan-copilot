@@ -122,7 +122,7 @@
   }
 
   function esc(s) {
-    return String(s || '').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
   function addMsg(who, text, isSystem) {
     const p = document.createElement('div');

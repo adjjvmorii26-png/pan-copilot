@@ -24,6 +24,7 @@ Not a cartoon mascot. A **constellation organism**:
 ## Files
 - `prototype/icons/pan-avatar.svg` — pure SVG animation
 - Inline in `prototype/content.js` header (v0.9.1+)
+- `prototype/verify.mjs` — offline proof (`node prototype/verify.mjs`)
 
 ## DNA
 Sigil × Constellation × Heartbeat × Dual-mode
