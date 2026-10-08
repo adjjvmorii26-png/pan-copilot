@@ -1,4 +1,4 @@
-// Pan Co-Pilot – Content Script v0.9 (Synapse)
+// Pan Co-Pilot – Content Script v0.9.1 (Avatar + Synapse)
 (function () {
   if (window.panInjected) return;
   window.panInjected = true;
@@ -10,11 +10,47 @@
   const HEARTBEAT = 'https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat';
   const SYNAPSE = 'https://pan-copilot-ixpansion-agents.vercel.app/api/synapse';
 
+  // Living constellation avatar (inline SVG — no network)
+  const AVATAR_SVG = `<svg class="pan-avatar" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+  <defs>
+    <radialGradient id="panCore" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="45%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </radialGradient>
+    <filter id="panGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="#030712"/>
+  <circle class="pan-ring" cx="32" cy="32" r="26" fill="none" stroke="#1e3a5f" stroke-width="1"/>
+  <ellipse class="pan-orbit" cx="32" cy="32" rx="22" ry="10" fill="none" stroke="#38bdf8" stroke-width="0.7" opacity="0.4"/>
+  <ellipse class="pan-orbit pan-orbit2" cx="32" cy="32" rx="10" ry="22" fill="none" stroke="#7dd3fc" stroke-width="0.7" opacity="0.3"/>
+  <g stroke="#60a5fa" stroke-width="0.9" fill="none" opacity="0.55">
+    <path d="M14 36 L24 18 L40 24 L50 14"/>
+    <path d="M24 18 L32 34 L40 24"/>
+    <path d="M32 34 L22 48 L42 52"/>
+  </g>
+  <g filter="url(#panGlow)" fill="#e0f2fe">
+    <circle class="pan-star s1" cx="14" cy="36" r="1.6"/>
+    <circle class="pan-star s2" cx="24" cy="18" r="2" fill="#7dd3fc"/>
+    <circle class="pan-star s3" cx="40" cy="24" r="1.5"/>
+    <circle class="pan-star s4" cx="50" cy="14" r="1.3"/>
+    <circle class="pan-star s2" cx="22" cy="48" r="1.2"/>
+    <circle class="pan-star s3" cx="42" cy="52" r="1.2"/>
+  </g>
+  <circle class="pan-core" cx="32" cy="34" r="5" fill="url(#panCore)" filter="url(#panGlow)"/>
+</svg>`;
+
   const panel = document.createElement('div');
   panel.id = 'pan-panel';
   panel.innerHTML = `
-    <div id="pan-header" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;cursor:move;background:#0f172a;border-bottom:1px solid #1e293b;">
-      <span style="font-weight:600;color:#93c5fd;">Pan <span id="pan-status" style="opacity:0.6;font-weight:400;font-size:12px;">v0.9</span></span>
+    <div id="pan-header" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:move;background:#0f172a;border-bottom:1px solid #1e293b;">
+      <span style="display:flex;align-items:center;gap:8px;font-weight:600;color:#93c5fd;">
+        <span id="pan-avatar-wrap" title="Pan — constellation face">${AVATAR_SVG}</span>
+        Pan <span id="pan-status" style="opacity:0.6;font-weight:400;font-size:12px;">v0.9.1</span>
+      </span>
       <span>
         <button id="pan-min" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:0 4px;">–</button>
         <button id="pan-close" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:0 4px;">×</button>
@@ -43,14 +79,47 @@
   });
   document.documentElement.appendChild(panel);
   document.head.appendChild(Object.assign(document.createElement('style'), {
-    textContent: `.pan-quick{padding:5px 8px;background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px}.pan-quick:hover{background:#334155}`
+    textContent: `
+      .pan-quick{padding:5px 8px;background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px}
+      .pan-quick:hover{background:#334155}
+      .pan-avatar{display:block;flex-shrink:0}
+      .pan-ring{animation:pan-breathe 3.2s ease-in-out infinite;transform-origin:32px 32px}
+      .pan-orbit{animation:pan-spin 12s linear infinite;transform-origin:32px 32px}
+      .pan-orbit2{animation-duration:18s;animation-direction:reverse}
+      .pan-star.s1{animation:pan-twinkle 2.4s ease-in-out infinite}
+      .pan-star.s2{animation:pan-twinkle 2.4s ease-in-out infinite .4s}
+      .pan-star.s3{animation:pan-twinkle 2.4s ease-in-out infinite .8s}
+      .pan-star.s4{animation:pan-twinkle 2.4s ease-in-out infinite 1.2s}
+      .pan-core{animation:pan-pulse 2.8s ease-in-out infinite;transform-origin:32px 34px}
+      @keyframes pan-spin{to{transform:rotate(360deg)}}
+      @keyframes pan-breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+      @keyframes pan-twinkle{0%,100%{opacity:.4}50%{opacity:1}}
+      @keyframes pan-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+      /* moods */
+      #pan-avatar-wrap.mood-strong .pan-core{animation-duration:1.4s}
+      #pan-avatar-wrap.mood-strong .pan-ring{stroke:#38bdf8}
+      #pan-avatar-wrap.mood-thin .pan-star{opacity:.25;animation:none}
+      #pan-avatar-wrap.mood-thin .pan-core{opacity:.5}
+      #pan-avatar-wrap.mood-oracle .pan-ring{stroke:#fbbf24}
+      #pan-avatar-wrap.mood-oracle .pan-core{filter:url(#panGlow)}
+      #pan-avatar-wrap.mood-shadow .pan-ring{stroke:#7c3aed}
+      #pan-avatar-wrap.mood-shadow .pan-core{opacity:.55}
+      #pan-avatar-wrap.mood-synapse .pan-core{animation-duration:0.9s}
+      #pan-avatar-wrap.mood-synapse .pan-ring{stroke:#fde68a}
+    `
   }));
 
   const chat = document.getElementById('pan-chat');
   const input = document.getElementById('pan-input');
   const statusEl = document.getElementById('pan-status');
   const body = document.getElementById('pan-body');
+  const avatarWrap = document.getElementById('pan-avatar-wrap');
   let minimized = false;
+
+  function setMood(mood) {
+    avatarWrap.className = '';
+    if (mood) avatarWrap.classList.add('mood-' + mood);
+  }
 
   function esc(s) {
     return String(s || '').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
@@ -81,7 +150,7 @@
     return 'neutral';
   }
 
-  addMsg('Pan', 'v0.9 synapse · organs cross-talk', true);
+  addMsg('Pan', 'v0.9.1 · living avatar · synapse', true);
 
   const header = document.getElementById('pan-header');
   let dragging = false, sx, sy, sl, st;
@@ -111,6 +180,7 @@
 
   function renderSynthesis(data, mode) {
     if (mode === 'oracle') {
+      setMood('oracle');
       const bn = data.meta?.bottleneck || 'None — organs clear';
       const rec = (data.recommendations && data.recommendations[0]) || 'Act on top signal';
       const syn = data.synapse?.phrase || '';
@@ -119,6 +189,7 @@
       return;
     }
     if (mode === 'synapse') {
+      setMood('synapse');
       const s = data.synapse || {};
       const L = data.meta?.live || {};
       addMsg('Pan', `<strong>⚡ Synapse</strong> — organ cross-talk<br><br>` +
@@ -131,6 +202,7 @@
       return;
     }
     if (mode === 'shadow') {
+      setMood('shadow');
       const L = data.meta?.live || {};
       const shadows = [];
       if (!L.calendar) shadows.push('Calendar auto-agenda (no ICS yet)');
@@ -140,6 +212,7 @@
       addMsg('Pan', `<strong>🌑 Shadow</strong><br><br>` + shadows.map(s => `• ${s}`).join('<br>'));
       return;
     }
+    setMood('strong');
     let html = `<strong>Status</strong><br>${esc(data.status || '')}<br><br>`;
     if (data.synapse?.phrase) {
       html += `<span style="color:#fbbf24">⚡ ${esc(data.synapse.phrase)}</span> · ${esc(data.synapse.myth || '')}<br><br>`;
@@ -178,12 +251,13 @@
         if (!res.ok) throw new Error(url + ' ' + res.status);
         const data = await res.json();
         renderSynthesis(data, mode);
-        statusEl.textContent = 'v0.9';
+        statusEl.textContent = 'v0.9.1';
         return;
       } catch (err) { lastErr = err; }
     }
+    setMood('thin');
     addMsg('Pan', `Backends failed: ${esc(lastErr?.message || 'unknown')}`);
-    statusEl.textContent = 'v0.9';
+    statusEl.textContent = 'v0.9.1';
   }
 
   async function runHeartbeat() {
@@ -191,22 +265,28 @@
     try {
       const res = await fetch(HEARTBEAT);
       const d = await res.json();
+      if (d.pulse === 'strong') setMood('strong');
+      else if (d.pulse === 'thin') setMood('thin');
+      else setMood('');
       addMsg('Pan', `<strong>💓 Heartbeat</strong><br>pulse=<b>${esc(d.pulse)}</b><br>` +
         Object.entries(d.organs || {}).map(([k,v]) => `${k}: ${esc(v)}`).join('<br>'));
     } catch (e) {
+      setMood('thin');
       addMsg('Pan', `Heartbeat failed: ${esc(e.message)}`);
     }
-    statusEl.textContent = 'v0.9';
+    statusEl.textContent = 'v0.9.1';
   }
 
   async function runSynapseLight() {
     statusEl.textContent = 'synapse…';
+    setMood('synapse');
     try {
       const res = await fetch(SYNAPSE);
       if (res.ok) {
         const d = await res.json();
+        if (d.coherence >= 70) setMood('strong');
         addMsg('Pan', `<strong>⚡ Synapse</strong><br>chord=<b>${esc(d.chord)}</b> coh=${esc(String(d.coherence))}<br>${esc(d.phrase)}<br><em>${esc(d.myth)}</em>`);
-        statusEl.textContent = 'v0.9';
+        statusEl.textContent = 'v0.9.1';
         return;
       }
     } catch (_) {}
@@ -226,7 +306,7 @@
     if (lower.includes('oracle') || lower.includes('bottleneck')) return runContextSynthesis(q, 'oracle');
     if (lower.includes('pulse') || lower.includes('heartbeat')) return runHeartbeat();
     if (lower.includes('page')) return pageHelp();
-    if (lower === 'help' || lower === '?') return addMsg('Pan', '🧠 Synth · 🔮 Oracle · ⚡ Synapse · 🌑 Shadow · 💓');
+    if (lower === 'help' || lower === '?') return addMsg('Pan', '🧠 Synth · 🔮 Oracle · ⚡ Synapse · 🌑 Shadow · 💓 · avatar lives in header');
     return runContextSynthesis(q, 'synth');
   }
 
@@ -252,4 +332,7 @@
     rec.onresult = e => process(e.results[0][0].transcript);
     document.getElementById('pan-speak').onclick = () => rec.start();
   }
+
+  // Soft boot pulse mood after load
+  setTimeout(() => { runHeartbeat().catch(() => {}); }, 600);
 })();
