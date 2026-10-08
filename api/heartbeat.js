@@ -14,7 +14,6 @@ export default async function handler(req, res) {
     calendar: Boolean(process.env.CALENDAR_ICS_URL)
   };
 
-  // Quick live probes (timeout-friendly)
   let notionData = false;
   let linearData = false;
   try {
@@ -44,16 +43,19 @@ export default async function handler(req, res) {
   } catch (_) {}
 
   const alive = [notionData, linearData, organs.calendar].filter(Boolean).length;
+  const chord = notionData && linearData ? 'duet' : notionData || linearData ? 'solo' : 'silence';
 
   return res.status(200).json({
     being: 'Pan',
     pulse: alive >= 2 ? 'strong' : alive === 1 ? 'thin' : 'quiet',
+    chord,
     organs: {
       notion: notionData ? 'beating' : organs.notion ? 'configured-but-silent' : 'absent',
       linear: linearData ? 'beating' : organs.linear ? 'configured-but-silent' : 'absent',
       calendar: organs.calendar ? 'ics-ready' : 'optional-absent'
     },
+    face: 'avatar-v0.9.1',
     at: new Date().toISOString(),
-    version: '0.8.1-heartbeat'
+    version: '0.9.1-heartbeat'
   });
 }

@@ -1,30 +1,22 @@
 # Pan Proof Battery
 
-**Run:** 2026-10-06T15:21Z (approx)  
-**Result:** **10 / 10 PASS**
+**Latest deep audit:** 2026-10-08 — see [AUDIT-2026-10-08.md](./AUDIT-2026-10-08.md)
 
-| # | Test | Result | Evidence |
-|---|------|--------|----------|
-| 01 | `GET /api/heartbeat` | PASS | pulse=strong · notion+linear beating |
-| 02 | `POST /api/synthesize` | PASS | live.notion=true · live.linear=true · bn=null · 9 signals |
-| 03 | Notion Memory Palace query | PASS | Active sample returned |
-| 04 | Genome `AGENT.md` raw | PASS | HTTP 200 |
-| 05 | `docs/legacy/LEGENDARIUM.md` | PASS | Legendary index live |
-| 06 | Skill builders + compost + alchemist | PASS | raw.githubusercontent 200 |
-| 07 | Netlify status page | PASS | HTTP 200 |
-| 08 | `prototype/manifest.json` | PASS | Panel packaged |
-| 09 | `POST /api/llm-bridge` | PASS | HTTP 503 expected without LLM_BASE_URL |
-| 10 | Charter · Dual-mode · LLM-ORGANS | PASS | Docs present |
+| # | Test | Result |
+|---|------|--------|
+| 01 | Heartbeat | PASS · strong (align to 0.9.1 on next deploy) |
+| 02 | Synapse | PASS · duet · coh≥80 |
+| 03 | Synthesize | PASS · v0.9.0-synapse · live N+L |
+| 04 | Genome files | PASS |
+| 05 | Panel 0.9.1 | PASS · avatar + moods |
+| 06 | Legendarium | PASS |
+| 07 | Skill catalog | PASS · 28 files audited |
+| 08 | LLM bridge | PASS · 503 without LLM_BASE_URL expected |
+| 09 | Status page | PASS · HTTP 200 |
+| 10 | Netlify synthesize | **LAG** · v0.5.x — Vercel primary |
 
 ## Endpoints
-- Heartbeat: https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat
-- Synthesize: https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize
-- Status: https://pan-copilot-ajlp.netlify.app/
-- Genome: https://github.com/adjjvmorii26-png/pan-copilot
-
-## Re-run
-```bash
-curl -s https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat | jq .
-curl -s -X POST https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize \
-  -H 'Content-Type: application/json' -d '{"query":"proof"}' | jq .meta
-```
+- https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat
+- https://pan-copilot-ixpansion-agents.vercel.app/api/synapse
+- https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize
+- https://pan-copilot-ajlp.netlify.app/
