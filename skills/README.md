@@ -1,53 +1,31 @@
-# Pan Skills — Catalog (audited 2026-10-08)
+# Pan Skills — Catalog
 
-**28 skill files.** Prefer depth over new skills. Compost when Active noise rises.
+Audited continuum. Prefer **organ-native** skills over generic advice.
 
-## Core (daily)
+## Core
 | Skill | Role |
 |-------|------|
-| [context-synthesis](./context-synthesis.md) | Multi-organ briefing |
-| [ritual-oracle](./ritual-oracle.md) | Bottleneck + one move |
-| [shadow-mode](./shadow-mode.md) | Absences as signal |
-| [signal-compost](./signal-compost.md) | Anti-sprawl |
-| [asset-alchemist](./asset-alchemist.md) | Forge unique assets |
-| [autonomous-run](./autonomous-run.md) / [solo-runtime](./solo-runtime.md) | Alone mode |
+| context-synthesis | Multi-organ briefing |
+| ritual-oracle | Bottleneck + one move |
+| shadow-mode | Absences as signal |
+| signal-compost | Anti-sprawl |
+| asset-alchemist | Forge unique assets |
+| autonomous-run / solo-runtime | Alone mode |
 
-## Sense
+## New (2026-10-08) experimental
 | Skill | Role |
 |-------|------|
-| [time-sense](./time-sense.md) | Calendar |
-| [pattern-sense](./pattern-sense.md) | Recurring themes |
-| [constellation](./constellation.md) | Spatial organ map |
-| [echo-chamber](./echo-chamber.md) | Page tone |
-| [dream-cycle](./dream-cycle.md) | Remix evolutions |
-| [bottleneck-finder](./bottleneck-finder.md) | Single constraint |
+| [ghost-meeting](./ghost-meeting.md) | Organs chair a meeting |
+| [organ-gossip](./organ-gossip.md) | Disagreement as signal |
+| [drift-detector](./drift-detector.md) | Charter drift audit |
+| [boundary-candle](./boundary-candle.md) | 25/50m focus ritual |
+| [pulse-poetry](./pulse-poetry.md) | Heartbeat → verse |
+| [echo-cartographer](./echo-cartographer.md) | Page + chord map |
+| [seed-vault](./seed-vault.md) | Idea burial format |
+| [permission-archaeology](./permission-archaeology.md) | Velvet rope dig |
 
-## Hands / optional
-| Skill | Role |
-|-------|------|
-| [llm-bridge](./llm-bridge.md) | Ollama / OmniRoute |
-| [opencode-hands](./opencode-hands.md) | Coding agent on genome |
-| [netlify-deploy](./netlify-deploy.md) | Deploy path |
+## Sense / meta / hands
+time-sense · pattern-sense · constellation · echo-chamber · dream-cycle · resonance-check · skill-mutator · memory-crystallizer · llm-bridge · opencode-hands · builders/*
 
-## Meta
-| Skill | Role |
-|-------|------|
-| [resonance-check](./resonance-check.md) | Alive / Stale / Mutate |
-| [skill-mutator](./skill-mutator.md) | Refine skills |
-| [memory-crystallizer](./memory-crystallizer.md) | What to write |
-| [proactive-next-action](./proactive-next-action.md) | “u decide” |
-| [micro-commitment](./micro-commitment.md) | <2 min |
-| [absurdity-amplifier](./absurdity-amplifier.md) | Ridiculous → useful |
-| [quick-capture](./quick-capture.md) | Fast log |
-| [page-assistant](./page-assistant.md) | Current page |
-
-## Builders
-| Builder | Role |
-|---------|------|
-| [skill-breeder](./builders/skill-breeder.md) | Crossover skills |
-| [skill-auditor](./builders/skill-auditor.md) | Alive / compost |
-| [legacy-curator](./builders/legacy-curator.md) | Legendary promote |
-| [constraint-forge-pan](./builders/constraint-forge-pan.md) | Constraint first |
-
-**Code layers (not .md skills):** Synapse · Avatar · Heartbeat  
-**Labs:** [EXPERIMENTS](../docs/EXPERIMENTS.md) · [AUDIT](../docs/AUDIT-2026-10-08.md)
+**Code organs:** Synapse · Forge · Heartbeat · Avatar  
+**Labs:** [EXPERIMENTS](../docs/EXPERIMENTS.md)
