@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Pan – Panoptic Co-Pilot",
-  "version": "0.8.0",
-  "description": "Distributed AI co-pilot. Synth · Oracle · Shadow · Heartbeat.",
+  "version": "0.9.1",
+  "description": "Distributed AI co-pilot. Avatar · Synth · Oracle · Synapse · Shadow · Heartbeat.",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["http://localhost/*", "https://*.vercel.app/*", "https://*.netlify.app/*"],
   "background": { "service_worker": "background.js" },
@@ -11,5 +11,9 @@
     "js": ["content.js"],
     "run_at": "document_idle"
   }],
-  "action": { "default_title": "Pan" }
+  "action": { "default_title": "Pan" },
+  "icons": {
+    "48": "icons/pan-badge.svg",
+    "128": "icons/pan-badge.svg"
+  }
 }
