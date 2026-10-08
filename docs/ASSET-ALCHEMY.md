@@ -1,26 +1,36 @@
-# Asset Alchemy — How Pan forges things
+# Asset Alchemy — Pan forges its own assets
 
-Pan doesn’t just advise. With **Asset Alchemist**, Pan **makes**.
+Pan doesn’t only advise. **Pan makes.**
 
-## Invocation phrases
-- “forge …”
-- “alchemist …”
-- “magic skill …”
-- “make me a unique asset …”
+## Alone-mode forge (no Grok required)
 
-## Example spells
-| Spell | Result |
-|-------|--------|
-| Forge a ritual card for Oracle | Notion page or md card in `docs/rituals/` |
-| Forge constellation wallpaper | Image via Grok Imagine |
-| Forge a 5-slide Pan story | Gamma deck |
-| Forge oracle whisper | Voice mp3 |
-| Forge panel badge | SVG/code in prototype |
+```
+GET  /api/forge?kind=seal
+POST /api/forge  { "kind": "chord" | "seal" | "token" | "myth", "seed": "optional" }
+```
 
-## Pipeline
-Intent → Constraint → Vessel → Create → Trace → Resonance
+Returns JSON with:
+- `name` — unique asset name
+- `svg` — full SVG markup
+- `dataUrl` — embeddable data URI
+- `whyPan` — why this isn’t generic
+- live `organs` snapshot used to stamp the art
 
-## Storage
-- Code/docs → GitHub genome
-- Memory of the act → Notion Evolution
-- Visuals → shared in chat + optional Drive/Canva
+### Kinds
+| Kind | What |
+|------|------|
+| **seal** | Coherence seal — Memory⟷Linear cord drawn live |
+| **chord** | Organ constellation glyph from current chord |
+| **token** | Mood token (STRONG / ALIGN / SEEK) |
+| **myth** | Banner of the current myth line |
+
+Raw SVG: `?kind=seal&format=svg`
+
+## With-Grok vessels
+Imagine · Gamma · Voice · Canva · genome commits · Notion traces
+
+## Panel
+Type **forge** or **alchemist** → forges a seal from live organs and shows it.
+
+## Rule
+If the asset would look the same with organs offline, discard it.

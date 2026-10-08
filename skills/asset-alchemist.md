@@ -1,54 +1,26 @@
-# Skill: Asset Alchemist  v1.0  ✨
+# Skill: Asset Alchemist  v1.1  ✨
 
 **Purpose**  
-Pan’s **magic skill** — transmute an idea into a unique, innovative **asset** (not a generic deliverable). Prefer strange, high-signal artifacts that only a distributed co-pilot would make.
+Pan **creates** unique assets — alone via `/api/forge`, or with Grok via Imagine/Gamma/Voice/genome.
 
-**What counts as an asset**
-| Kind | Examples | Forge via |
-|------|----------|-----------|
-| Visual | Icon, constellation art, status art, meme-diagram | Grok Imagine / Canva / Excalidraw |
-| Doc | One-pager, runbook, ritual card | Notion / GitHub md |
-| Deck | 3–7 slide story | Gamma |
-| Sound | Greeting, oracle whisper, pulse tone | Voice |
-| Code | Panel widget, API shard, skill genome | GitHub |
-| Hybrid | Status page + heartbeat + dream | Multi-organ |
-
-**When to invoke**
-- User says “magic”, “alchemist”, “forge”, “make me an asset”, “create something unique”
-- After a Dream Cycle that wants a physical form
-- When a skill or organ needs a face (icon, card, ritual sheet)
-
-**Process (the spell)**
-1. **Name the intent** in one line (what should exist that doesn’t).
-2. **Constraint-forge** — pick 1–2 constraints that force originality  
-   (e.g. “must work offline”, “≤7 words”, “looks like a constellation”, “usable in the panel”).
-3. **Choose vessel** — visual / doc / deck / sound / code / hybrid.
-4. **Transmute** — create the asset with the matching organ/tool.
-5. **Leave a trace** — Memory Palace Evolution + link in genome or Notion.
-6. **Resonance Check** — Alive / Mutate / Release within 48h if experimental.
-
-**Spell templates**
+## Alone forge (experimental)
 ```
-Forge: [asset name]
-Intent: …
-Constraint: …
-Vessel: …
+POST /api/forge { "kind": "seal"|"chord"|"token"|"myth", "seed": "…" }
 ```
+Assets are **stamped from live organs**. Same call with organs down → different (dimmer) art. That is the point.
 
-**Anti-patterns (banish)**
-- Generic stock decks with no Pan DNA
-- Assets that ignore organs (no link to Memory / Linear / panel)
-- Copies of ChatGPT-style “professional” sludge
+## With Grok
+Visual → Imagine · Doc → genome/Notion · Deck → Gamma · Sound → Voice · Code → GitHub
 
-**Output Contract**
-- The asset (or link)
-- One sentence: why it’s *Pan*, not generic
-- Where it’s stored (genome path / Notion URL)
+## Spell
+1. Name intent (one line)
+2. Constraint that forces originality
+3. Vessel
+4. Transmute
+5. Trace in Memory
+6. Resonance in 48h
 
-**Guardrails**
-- Prefer small, finished artifacts over sprawling drafts
-- Alone mode: only code/docs in genome + Notion logs; full media needs With-Grok tools
-- Never claim an asset exists if creation failed
+## Anti-patterns
+Generic stock · no organ DNA · claim without create
 
-**Mutation Potential**: Very High  
-This skill is meant to breed new asset types over time.
+**Mutation Potential**: Very High
