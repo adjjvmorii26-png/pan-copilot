@@ -1,28 +1,16 @@
-# Pan Panel — Browser Extension
-
-**Version 0.9.1** — Avatar · Synapse · Oracle · Shadow · Heartbeat
+# Pan Panel v0.9.2 — Deep Visuals
 
 ## Load
-1. `chrome://extensions` → Developer mode
-2. Load unpacked → this `prototype/` folder
-3. Reload after `git pull`
+`chrome://extensions` → Developer mode → Load unpacked → `prototype/` → Reload after pull.
 
-## Buttons
-| Control | Action |
-|---------|--------|
-| 🧠 Synth | Full multi-organ briefing + synapse line |
-| 🔮 Oracle | Bottleneck + one move |
-| ⚡ Synapse | Coherence / chord / myth |
-| 🌑 Shadow | What Pan cannot see |
-| 💓 | Organ heartbeat (drives avatar mood) |
-| 📄 | Page tone |
+## Visual DNA
+- Nebula drift backdrop
+- Scan veil
+- Mood auras on the whole panel
+- Living constellation avatar (halo + orbits)
+- Message rise animations
 
-## Avatar moods
-idle · strong · thin · oracle · shadow · synapse
+See [docs/VISUALS.md](../docs/VISUALS.md).
 
-## Backend
-Primary: `https://pan-copilot-ixpansion-agents.vercel.app`  
-- `POST /api/synthesize` · `GET /api/heartbeat` · `GET /api/synapse`
-
-## Organs
-Memory Palace · Linear · Calendar (optional ICS) · Avatar face
+## Controls
+🧠 Synth · 🔮 Oracle · ⚡ Synapse · 🌑 Shadow · 💓 · 📄
