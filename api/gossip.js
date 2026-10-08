@@ -25,14 +25,14 @@ export default async function handler(req, res) {
     gossip.push({ risk: 8, line: 'Memory threw: ' + (e.message || 'error') });
   }
 
-  let openIssues = 0, inProg = 0;
+  let openIssues = 0, inProg = 0, panTagged = 0;
   try {
     if (hasLinear) {
       const r = await fetch('https://api.linear.app/graphql', {
         method: 'POST',
         headers: { Authorization: process.env.LINEAR_API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: `{ issues(filter: { project: { name: { containsIgnoreCase: "Pan" } }, state: { type: { nin: ["completed", "canceled"] } } }, first: 12) { nodes { state { name } } } }`
+          query: `{ issues(filter: { state: { type: { nin: ["completed", "canceled"] } } }, first: 25) { nodes { title state { name type } } } }`
         })
       });
       linearOk = r.ok;
@@ -40,9 +40,12 @@ export default async function handler(req, res) {
         const data = await r.json();
         const nodes = data.data?.issues?.nodes || [];
         openIssues = nodes.length;
-        inProg = nodes.filter(n => /in progress/i.test(n.state?.name || '')).length;
+        inProg = nodes.filter(n => /in progress|started/i.test(n.state?.name || '') || n.state?.type === 'started').length;
+        panTagged = nodes.filter(n => /pan/i.test(n.title || '')).length;
         if (inProg >= 2) gossip.push({ risk: 9, line: `Nerves overcommitted — ${inProg} In Progress at once` });
-        if (openIssues === 0) gossip.push({ risk: 3, line: 'Nerves quiet — no open Pan issues (calm or forgotten?)' });
+        if (openIssues === 0) gossip.push({ risk: 3, line: 'Nerves quiet — no open issues (calm or forgotten?)' });
+        else if (panTagged === 0) gossip.push({ risk: 2, line: `Nerves open (${openIssues}) but none titled Pan — attention may drift` });
+        else gossip.push({ risk: 1, line: `Nerves holding ${openIssues} open (${panTagged} Pan-tagged, ${inProg} in progress)` });
       } else {
         gossip.push({ risk: 7, line: 'Linear configured but silent' });
       }
@@ -65,8 +68,8 @@ export default async function handler(req, res) {
   if (!hasCal) {
     gossip.push({ risk: 2, line: 'Time organ optional-absent — no ICS (calendar gossip is soft)' });
   }
-  if (notionOk && linearOk && inProg <= 1) {
-    gossip.push({ risk: 1, line: 'Duet is clean — little gossip, prefer Oracle for the single move' });
+  if (notionOk && linearOk && inProg <= 1 && openIssues > 0) {
+    gossip.push({ risk: 1, line: 'Duet is clean — prefer Oracle on the highest Linear signal' });
   }
 
   gossip.sort((a, b) => b.risk - a.risk);
@@ -75,7 +78,9 @@ export default async function handler(req, res) {
     ? 'Address top gossip only: ' + top.line
     : top && top.risk >= 4
       ? 'Watch: ' + top.line
-      : 'Organs mostly aligned — one Oracle move on highest Linear signal';
+      : !hasCal
+        ? 'Light Time organ: set CALENDAR_ICS_URL on Vercel (Linear ADJ-12)'
+        : 'Organs mostly aligned — one Oracle move on highest Linear signal';
 
   return res.status(200).json({
     being: 'Pan',
@@ -84,8 +89,8 @@ export default async function handler(req, res) {
     ranked: gossip,
     top: top || null,
     oneMove: move,
-    live: { notion: notionOk, linear: linearOk, calendar: hasCal },
+    live: { notion: notionOk, linear: linearOk, calendar: hasCal, openIssues, inProg, panTagged },
     at: new Date().toISOString(),
-    version: '0.9.2-gossip'
+    version: '0.9.3-gossip'
   });
 }
