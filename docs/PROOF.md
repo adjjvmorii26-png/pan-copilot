@@ -1,22 +1,11 @@
-# Pan Proof Battery
+# Proof battery (spot-check)
 
-**Latest deep audit:** 2026-10-08 — see [AUDIT-2026-10-08.md](./AUDIT-2026-10-08.md)
+```bash
+BASE=https://pan-copilot-ixpansion-agents.vercel.app
+curl -s $BASE/api/heartbeat | jq .pulse,.chord
+curl -s $BASE/api/synapse | jq .chord,.coherence,.myth
+curl -s $BASE/api/gossip | jq .top,.oneMove
+curl -s -X POST $BASE/api/forge -H 'Content-Type: application/json' -d '{"kind":"seal"}' | jq .name,.whyPan
+```
 
-| # | Test | Result |
-|---|------|--------|
-| 01 | Heartbeat | PASS · strong (align to 0.9.1 on next deploy) |
-| 02 | Synapse | PASS · duet · coh≥80 |
-| 03 | Synthesize | PASS · v0.9.0-synapse · live N+L |
-| 04 | Genome files | PASS |
-| 05 | Panel 0.9.1 | PASS · avatar + moods |
-| 06 | Legendarium | PASS |
-| 07 | Skill catalog | PASS · 28 files audited |
-| 08 | LLM bridge | PASS · 503 without LLM_BASE_URL expected |
-| 09 | Status page | PASS · HTTP 200 |
-| 10 | Netlify synthesize | **LAG** · v0.5.x — Vercel primary |
-
-## Endpoints
-- https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat
-- https://pan-copilot-ixpansion-agents.vercel.app/api/synapse
-- https://pan-copilot-ixpansion-agents.vercel.app/api/synthesize
-- https://pan-copilot-ajlp.netlify.app/
+Panel: reload → 💬 Gossip should list live tensions.
