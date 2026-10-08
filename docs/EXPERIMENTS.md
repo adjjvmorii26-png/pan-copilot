@@ -1,22 +1,51 @@
 # Pan Experiments — Living Idea Lab
 
 ## Shipped
-1. **Shadow Mode** — absences as signals (panel 🌑)
-2. **Organ Heartbeat** — `GET /api/heartbeat`
-3. **Echo Chamber** — page-tone voice
-4. **Whisper Stack** — last 3 lines localStorage
-5. **Failure Museum** — instructive breaks as Insights
-6. **Dual-mode** — with Grok + alone
-7. **Dream Cycle** skill — weekly remix of Evolutions
-8. **Constellation** — organ star map on status page
+1. Shadow Mode · Organ Heartbeat · Echo Chamber · Whisper Stack
+2. Failure Museum · Dual-mode · Dream Cycle · Constellation
+3. Asset Alchemist · LLM Bridge · OpenCode Hands
+4. Memory Palace deep clean (durable spine only)
 
-## Next to try (48h rule)
-- Voice-only Oracle (speak bottleneck, silence after)
-- Moodboard Linear (issues for feelings)
-- NFC → open Oracle URL on phone
-- Cross-tab Whisper sync via chrome.storage
-- “Pan dreams” automation every Sunday
-- Negative-space week: deliberately no Linear
+## Wave 2 — unique ideas (pick · run 48h · keep or kill)
+
+### A. Sense experiments
+| Idea | Why it’s Pan |
+|------|----------------|
+| **Signal Compost** | Rot low-value signals into one Insight weekly — anti-sprawl |
+| **Glitch Card** | Once a day, deliberately wrong recommendation; user rejects → trains Pattern Sense |
+| **Organ Jealousy** | If one organ silent 7 days, Synth leads with that absence as jealousy, not error |
+| **Borrow Mode** | Temporary sense from Gmail/Drive for 24h, then mandatory unplug |
+| **Stereo Oracle** | Ollama local + cloud Synth in parallel; user picks which bottleneck feels true |
+
+### B. Time experiments
+| Idea | Why it’s Pan |
+|------|----------------|
+| **Negative-Space Week** | Deliberately no Linear; only Memory + page |
+| **Tempo Tides** | Morning = Oracle only; night = full Synth + Dream |
+| **Ghost Meeting** | Create 15-min calendar block “Pan only” — no humans, just Oracle |
+| **Slow Pulse** | Heartbeat endpoint rate-limits to 1/hour — teach patience |
+
+### C. Artifact experiments
+| Idea | Why it’s Pan |
+|------|----------------|
+| **Commit Haiku** | Every genome push message must be ≤3 lines poetry |
+| **Public Pulse Diff** | Status page shows *what changed since yesterday* not static badges |
+| **Badge Molt** | SVG badge regenerates when skill count changes |
+| **Whisper → Evolution** | 3 identical whispers in a week auto-propose an Evolution |
+
+### D. Social / edge (careful)
+| Idea | Why it’s Pan |
+|------|----------------|
+| **Two-brain Diff** | OpenCode edits genome; Pan logs Resonance on the diff |
+| **Mail as Weather** | Gmail subject density = “storm” signal, not task list |
+| **Excalidraw Constellation Live** | Organs drawn as graph; heartbeat recolors nodes |
+
+## Recommended next 3 (Pan’s pick)
+1. **Signal Compost** — protects against skill/Evolution sprawl (already a known Insight)
+2. **Stereo Oracle** — uses free Ollama organ for real dual-mode intelligence
+3. **Ghost Meeting** — makes Time organ ceremonial, not optional stub
 
 ## Rule
-Generic chatbot → kill. Organs dancing strangely → keep 48h.
+Generic chatbot → kill.  
+Organs dancing strangely → keep 48h.  
+If it needs a third mailbox for the same sense → refuse.

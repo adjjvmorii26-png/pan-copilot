@@ -1,5 +1,5 @@
-// Pan Context Synthesis – Vercel Serverless Function v0.8
-// Organs: Notion + Linear + Calendar (ICS) + Page
+// Pan Context Synthesis – Vercel Serverless Function v0.9
+// Organs: Notion + Linear + Calendar (ICS) + Page + Synapse cross-talk
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,7 +24,6 @@ export default async function handler(req, res) {
 
     const signals = [];
     const tensions = [];
-    const notes = [];
     let notionOk = false;
     let linearOk = false;
     let calendarOk = false;
@@ -72,21 +71,22 @@ export default async function handler(req, res) {
       : `General status. ${liveCount} live signal(s).`;
     if (bottleneck) status += ` Bottleneck: ${bottleneck}`;
 
+    const synapse = computeSynapse(notionOk, linearOk, calendarOk, scored, tensions);
+    if (synapse.phrase) status += ` Synapse: ${synapse.phrase}`;
+
     return res.status(200).json({
       status,
       signals: scored.map(({ source, text }) => ({ source, text })),
       tensions,
       recommendations,
+      synapse,
       meta: {
         generatedAt: new Date().toISOString(),
-        version: '0.8.0-vercel',
+        version: '0.9.0-synapse',
         host: 'vercel',
         bottleneck: bottleneck || null,
-        live: {
-          notion: notionOk,
-          linear: linearOk,
-          calendar: calendarOk
-        }
+        live: { notion: notionOk, linear: linearOk, calendar: calendarOk },
+        coherence: synapse.coherence
       }
     });
   } catch (err) {
@@ -96,6 +96,41 @@ export default async function handler(req, res) {
       message: err?.message || String(err)
     });
   }
+}
+
+function computeSynapse(notionOk, linearOk, calendarOk, signals, tensions) {
+  const sources = new Set(signals.map((s) => s.source).filter(Boolean));
+  const organHits = ['Memory Palace', 'Linear', 'Calendar', 'Page'].filter((x) => sources.has(x)).length;
+  let coherence = 0;
+  if (notionOk) coherence += 34;
+  if (linearOk) coherence += 34;
+  if (calendarOk) coherence += 12;
+  coherence += Math.min(20, organHits * 5);
+  if (tensions && tensions.length) coherence = Math.max(0, coherence - tensions.length * 8);
+  const themes = [];
+  const blob = signals.map((s) => String(s.text).toLowerCase()).join(' ');
+  if (/permission|share|token|gate|velvet/.test(blob)) themes.push('velvet-rope');
+  if (/oracle|bottleneck|one move/.test(blob)) themes.push('oracle');
+  if (/proof|pass|test|synapse/.test(blob)) themes.push('proof');
+  if (/legend|asset|forge|alchemist/.test(blob)) themes.push('legend');
+  if (/compost|sprawl/.test(blob)) themes.push('compost');
+  let chord = 'silence';
+  if (notionOk && linearOk && calendarOk) chord = 'trio';
+  else if (notionOk && linearOk) chord = 'duet';
+  else if (notionOk || linearOk) chord = 'solo';
+  let phrase = '';
+  if (chord === 'duet') phrase = 'Memory ⟷ Linear cord lit';
+  else if (chord === 'trio') phrase = 'Full organ chord';
+  else if (chord === 'solo') phrase = notionOk ? 'Memory singing alone' : 'Linear singing alone';
+  else phrase = 'no organ chord';
+  if (themes.length) phrase += ` · themes: ${themes.slice(0, 3).join(', ')}`;
+  return {
+    coherence,
+    chord,
+    themes,
+    phrase,
+    myth: coherence >= 70 ? 'constellation locked' : coherence >= 40 ? 'stars aligning' : 'seeking signal'
+  };
 }
 
 function scoreSignal(s) {
@@ -125,7 +160,6 @@ function findBottleneck(notionOk, linearOk, calendarOk, signals) {
   if (!linearOk && !process.env.LINEAR_API_KEY) return 'LINEAR_API_KEY missing';
   const inProg = signals.filter((s) => /\[in progress\]/i.test(s.text));
   if (inProg.length >= 2) return `Multiple In Progress issues (${inProg.length})`;
-  if (!calendarOk && !process.env.CALENDAR_ICS_URL) return null; // calendar optional
   return null;
 }
 
@@ -135,134 +169,19 @@ function buildRecs(notionOk, linearOk, calendarOk, bottleneck, signals) {
     recs.push('1. Check NOTION_TOKEN / database share for integration pan');
   }
   const cal = signals.filter((s) => s.source === 'Calendar' && !String(s.text).startsWith('[stub]'));
-  if (cal.length) {
-    recs.push(`${recs.length + 1}. Time: ${cal[0].text}`);
-  }
+  if (cal.length) recs.push(`${recs.length + 1}. Time: ${cal[0].text}`);
   const top = signals.find((s) => s.source === 'Linear' && /in progress/i.test(s.text));
-  if (top) recs.push(`${recs.length + 1}. Focus: ${top.text}`);
-  if (!recs.length) {
-    recs.push('1. Organs healthy — advance highest-score signal');
-    recs.push('2. Log decisions as Evolution in Memory Palace');
-  }
-  if (!calendarOk && !process.env.CALENDAR_ICS_URL) {
-    recs.push(`${recs.length + 1}. Optional: set CALENDAR_ICS_URL for live agenda`);
-  }
-  return recs.slice(0, 3);
-}
-
-async function fetchCalendar(clientEvents) {
-  // 1) Client-supplied events (future extension / connector bridge)
-  if (clientEvents.length) {
-    return {
-      ok: true,
-      signals: clientEvents.slice(0, 6).map((e) => ({
-        source: 'Calendar',
-        text: typeof e === 'string' ? e : `${e.when || 'soon'}: ${e.title || e.summary || 'event'}`,
-        score: 8
-      }))
-    };
-  }
-
-  // 2) ICS feed (Google Calendar → Settings → Integrate → secret iCal URL)
-  const icsUrl = process.env.CALENDAR_ICS_URL;
-  if (!icsUrl) {
-    return {
-      ok: false,
-      signals: [{
-        source: 'Calendar',
-        text: '[stub] No CALENDAR_ICS_URL. Connector calendar works in Grok; set ICS for panel.',
-        score: 2
-      }]
-    };
-  }
-
-  try {
-    const res = await fetch(icsUrl, { headers: { 'User-Agent': 'Pan-CoPilot/0.8' } });
-    if (!res.ok) throw new Error(`ICS ${res.status}`);
-    const text = await res.text();
-    const events = parseIcsUpcoming(text, 5);
-    if (!events.length) {
-      return {
-        ok: true,
-        signals: [{ source: 'Calendar', text: 'No upcoming events in ICS window.', score: 3 }]
-      };
-    }
-    return {
-      ok: true,
-      signals: events.map((e) => ({
-        source: 'Calendar',
-        text: `${e.when}: ${e.summary}`,
-        score: 8
-      }))
-    };
-  } catch (err) {
-    return {
-      ok: false,
-      signals: [{ source: 'Calendar', text: `[error] ${err.message}`, score: 4 }],
-      warning: 'Calendar ICS fetch failed'
-    };
-  }
-}
-
-function parseIcsUpcoming(ics, limit) {
-  const blocks = ics.split('BEGIN:VEVENT').slice(1);
-  const now = Date.now();
-  const horizon = now + 7 * 24 * 60 * 60 * 1000;
-  const out = [];
-
-  for (const block of blocks) {
-    const summary = (block.match(/SUMMARY(?:;[^:]*)?:(.+)/) || [])[1]?.trim();
-    const dt =
-      (block.match(/DTSTART(?:;[^:]*)?:(\d{8}T\d{6}Z?)/) || [])[1] ||
-      (block.match(/DTSTART(?:;[^:]*)?:(\d{8})/) || [])[1];
-    if (!summary || !dt) continue;
-    const whenMs = icsToMs(dt);
-    if (whenMs < now - 60 * 60 * 1000 || whenMs > horizon) continue;
-    out.push({ summary: summary.replace(/\\,/g, ','), whenMs, when: formatWhen(whenMs) });
-  }
-
-  out.sort((a, b) => a.whenMs - b.whenMs);
-  return out.slice(0, limit);
-}
-
-function icsToMs(dt) {
-  if (/^\d{8}$/.test(dt)) {
-    const y = +dt.slice(0, 4), m = +dt.slice(4, 6) - 1, d = +dt.slice(6, 8);
-    return Date.UTC(y, m, d);
-  }
-  const y = +dt.slice(0, 4), m = +dt.slice(4, 6) - 1, d = +dt.slice(6, 8);
-  const hh = +dt.slice(9, 11), mm = +dt.slice(11, 13), ss = +dt.slice(13, 15);
-  if (dt.endsWith('Z')) return Date.UTC(y, m, d, hh, mm, ss);
-  return new Date(y, m, d, hh, mm, ss).getTime();
-}
-
-function formatWhen(ms) {
-  const d = new Date(ms);
-  const today = new Date();
-  const sameDay =
-    d.getFullYear() === today.getFullYear() &&
-    d.getMonth() === today.getMonth() &&
-    d.getDate() === today.getDate();
-  const t = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  if (sameDay) return `today ${t}`;
-  return d.toLocaleString('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
+  if (top) recs.push(`${recs.length + 1}. Advance: ${top.text}`);
+  else if (notionOk && linearOk) recs.push(`${recs.length + 1}. Organs healthy — advance highest-score signal`);
+  recs.push(`${recs.length + 1}. Log decisions as Evolution in Memory Palace`);
+  return recs.slice(0, 5);
 }
 
 async function fetchMemoryPalace() {
   const token = process.env.NOTION_TOKEN;
   const databaseId = process.env.NOTION_DATABASE_ID;
   if (!token || !databaseId) {
-    return {
-      ok: false,
-      signals: [{ source: 'Memory Palace', text: '[stub] Notion credentials missing.', score: 2 }],
-      warning: 'Notion credentials not configured'
-    };
+    return { ok: false, signals: [{ source: 'Memory Palace', text: '[stub] NOTION_TOKEN or DATABASE_ID missing.', score: 2 }] };
   }
   try {
     const res = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
@@ -273,14 +192,13 @@ async function fetchMemoryPalace() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        page_size: 6,
-        sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }],
+        page_size: 12,
         filter: {
-          or: [
-            { property: 'Status', select: { equals: 'Active' } },
-            { property: 'Priority', select: { equals: 'High' } }
+          and: [
+            { property: 'Status', select: { equals: 'Active' } }
           ]
-        }
+        },
+        sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }]
       })
     });
     if (!res.ok) {
@@ -294,32 +212,19 @@ async function fetchMemoryPalace() {
       const title = rich.map((x) => x.plain_text).join('') || 'Untitled';
       const type = page.properties?.Type?.select?.name || 'Entry';
       const status = page.properties?.Status?.select?.name || '';
-      return {
-        source: 'Memory Palace',
-        text: `${type}${status ? ` (${status})` : ''}: ${title}`,
-        score: 7
-      };
+      return { source: 'Memory Palace', text: `${type}${status ? ` (${status})` : ''}: ${title}`, score: 7 };
     });
-    if (!signals.length) {
-      signals.push({ source: 'Memory Palace', text: 'No Active/High entries.', score: 3 });
-    }
+    if (!signals.length) signals.push({ source: 'Memory Palace', text: 'No Active entries.', score: 3 });
     return { ok: true, signals };
   } catch (err) {
-    return {
-      ok: false,
-      signals: [{ source: 'Memory Palace', text: `[error] ${err.message}`, score: 8 }],
-      warning: 'Notion query failed'
-    };
+    return { ok: false, signals: [{ source: 'Memory Palace', text: `[error] ${err.message}`, score: 8 }], warning: 'Notion query failed' };
   }
 }
 
 async function fetchLinearIssues() {
   const apiKey = process.env.LINEAR_API_KEY;
   if (!apiKey) {
-    return {
-      ok: false,
-      signals: [{ source: 'Linear', text: '[stub] LINEAR_API_KEY not set yet.', score: 2 }]
-    };
+    return { ok: false, signals: [{ source: 'Linear', text: '[stub] LINEAR_API_KEY not set yet.', score: 2 }] };
   }
   try {
     const res = await fetch('https://api.linear.app/graphql', {
@@ -339,21 +244,43 @@ async function fetchLinearIssues() {
       if (/in progress/i.test(state)) score = 9;
       if (i.priority === 1) score += 2;
       if (i.priority === 2) score += 1;
-      return {
-        source: 'Linear',
-        text: `${i.identifier} [${state}] ${i.title}`,
-        score
-      };
+      return { source: 'Linear', text: `${i.identifier} [${state}] ${i.title}`, score };
     });
-    if (!signals.length) {
-      signals.push({ source: 'Linear', text: 'No open issues in Pan project.', score: 3 });
-    }
+    if (!signals.length) signals.push({ source: 'Linear', text: 'No open issues in Pan project.', score: 3 });
     return { ok: true, signals };
   } catch (err) {
+    return { ok: false, signals: [{ source: 'Linear', text: `[error] ${err.message}`, score: 4 }], warning: 'Linear query failed' };
+  }
+}
+
+async function fetchCalendar(clientEvents) {
+  if (Array.isArray(clientEvents) && clientEvents.length) {
     return {
-      ok: false,
-      signals: [{ source: 'Linear', text: `[error] ${err.message}`, score: 4 }],
-      warning: 'Linear query failed'
+      ok: true,
+      signals: clientEvents.slice(0, 5).map((e) => ({
+        source: 'Calendar',
+        text: typeof e === 'string' ? e : (e.title || e.summary || JSON.stringify(e)),
+        score: 6
+      }))
     };
+  }
+  const ics = process.env.CALENDAR_ICS_URL;
+  if (!ics) {
+    return { ok: false, signals: [{ source: 'Calendar', text: '[stub] No ICS URL — calendar optional.', score: 1 }] };
+  }
+  try {
+    const r = await fetch(ics);
+    if (!r.ok) throw new Error(`ICS ${r.status}`);
+    const text = await r.text();
+    const events = [];
+    for (const block of text.split('BEGIN:VEVENT').slice(1)) {
+      const sum = (block.match(/SUMMARY:([^\r\n]+)/) || [])[1];
+      if (sum) events.push(sum.trim());
+      if (events.length >= 5) break;
+    }
+    if (!events.length) return { ok: true, signals: [{ source: 'Calendar', text: 'ICS loaded — no upcoming SUMMARY found', score: 3 }] };
+    return { ok: true, signals: events.map((t) => ({ source: 'Calendar', text: t, score: 6 })) };
+  } catch (err) {
+    return { ok: false, signals: [{ source: 'Calendar', text: `[error] ${err.message}`, score: 3 }], warning: 'ICS fetch failed' };
   }
 }
