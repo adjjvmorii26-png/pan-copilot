@@ -1,29 +1,18 @@
-# Pan Status — 2026-10-09 (trio scoring)
+# Pan Status — 2026-10-09
 
-## Chord logic
-| Beating organs | Chord |
-|----------------|-------|
-| 3 | **trio** |
-| 2 | duet |
-| 1 | solo |
-| 0 | silence |
-
-Coherence weights: Memory **35** · Nerves **35** · Time **30** (full = 100).
-
-## Expected live
-| Organ | State |
-|-------|--------|
-| Memory (Notion) | beating |
-| Nerves (Linear) | beating |
-| Time (ICS) | beating |
-| Chord | **trio** |
-| Coherence | **100** |
+## Chord
+**trio** · coherence **100** · Memory ⟷ Linear ⟷ Time
 
 ## Code organs
-`/api/heartbeat` · `/api/synapse` · `/api/synthesize` · `/api/forge` · `/api/gossip`
+| Endpoint | Version |
+|----------|---------|
+| `/api/heartbeat` | 0.9.4 |
+| `/api/synapse` | 0.9.4 |
+| `/api/synthesize` | live |
+| `/api/gossip` | 0.9.3 |
+| `/api/forge` | 0.9.4 |
+| **`/api/edge`** | **0.9.5** gem state ingest |
 
-## Time feed
-`CALENDAR_ICS_URL` → `public/pan-time.ics`
-
-## Panel
-v0.9.2 — Synth · Oracle · Synapse · Gossip · Shadow · Pulse · Forge · Page
+## Edge
+POST cognitive_state → mood map + forgeHint  
+Docs: EDGE-GEMMA.md

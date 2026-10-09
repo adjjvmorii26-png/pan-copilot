@@ -1,34 +1,30 @@
-# Edge organ — Local Gemma (Gem node)
+# Edge organ — Local Gemma + `/api/edge`
 
-Pan’s distributed consciousness does **not** require every thought to hit the cloud.
-This experiment adds an **edge organ**: on-device Gemma evaluates tilt → one-word energy state → shaders + multi-agent bus.
+## Live API
+```bash
+# Discover
+curl -s https://pan-copilot-ixpansion-agents.vercel.app/api/edge | jq .
+
+# Ingest gem state (from phone or simulator)
+curl -s -X POST https://pan-copilot-ixpansion-agents.vercel.app/api/edge \
+  -H 'Content-Type: application/json' \
+  -d '{"agent_id":"mobile_node_01","cognitive_state":"Resonant","tilt":{"beta":12,"gamma":-3}}' | jq .
+```
+
+## Mood map
+| Gemma word | Panel mood | Forge hint |
+|------------|------------|------------|
+| Resonant / Calm / Aligned | strong | token / seal |
+| Chaotic / Turbulent | synapse | myth |
+| Dormant / Quiet / Seeking | thin | token optional |
+| Shadow | shadow | seal |
+| Oracle | oracle | myth |
+| Unknown | synapse | myth |
 
 ## Stack
-| Layer | Role |
-|-------|------|
-| **Android / LiteRT-LM** | Local Gemma (`gemma-3n-e2b.litertlm`) |
-| **Motion** | `tiltBeta` / `tiltGamma` as sensory input |
-| **Semantic** | One-word gem state: Resonant · Chaotic · Dormant · … |
-| **React Native bridge** | `GemmaInference` native module → JS |
-| **Three.js** | Shader color / refraction from state |
-| **Socket** | `telemetry_sync` → orchestration backend |
+Android LiteRT-LM → RN bridge → **POST /api/edge** → panel mood · optional `/api/forge`
 
-## Charter fit
-- **Not one silo** — cognition on the phone *and* in Memory/Linear/Vercel
-- **Traces** — emit states into Gossip themes / Notion Evolution when useful
-- **Assets** — gem energy can stamp Forge mood tokens (`STRONG` / `ALIGN` / `SEEK` / future `RESONANT`)
+Socket `telemetry_sync` remains optional; Pan core uses HTTP edge ingest so alone-mode works without `api.alexalex.info`.
 
-## Alone vs With-Grok
-| Mode | What runs |
-|------|-----------|
-| **Alone (device)** | Gemma local · no API key · offline capable |
-| **With-Grok** | Map gem state → Oracle / Pulse Poetry / Forge |
-| **Backend** | Optional `socket.emit("telemetry_sync")` — do not hard-require `api.alexalex.info` for Pan core |
-
-## Suggested Pan integration path
-1. Normalize gem state → panel mood classes (`mood-strong` / `mood-shadow` / …)
-2. Optional: `POST /api/gossip` body `{ edge: { source: "gemma", state } }` (future)
-3. Forge token when state flips (asset-first)
-
-## Status
-**Seed / germinating** — code pattern captured 2026-10-09. Not required for trio chord.
+## Charter
+Phone is an organ. One-word states. Prefer assets when state flips.
