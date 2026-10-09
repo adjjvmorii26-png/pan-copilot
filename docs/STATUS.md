@@ -1,13 +1,13 @@
-# Pan Status — 2026-10-08
+# Pan Status — 2026-10-09
 
 ## Chord
-**Duet** · coherence **80** · myth *constellation locked*
+**Duet+** · coherence **90** · myth *constellation locked*
 
 | Organ | Live |
 |-------|------|
-| Memory (Notion) | ✅ |
-| Nerves (Linear) | ✅ |
-| Time (Calendar ICS) | ❌ optional |
+| Memory (Notion) | ✅ beating |
+| Nerves (Linear) | ✅ beating |
+| Time (Calendar ICS) | ✅ **ics-ready** |
 | Genome (GitHub) | ✅ |
 | Deploy (Vercel) | ✅ |
 
@@ -20,13 +20,15 @@
 | `/api/forge` | Procedural SVG assets |
 | `/api/gossip` | Ranked organ tensions |
 
-## Panel (v0.9.2)
-Synth · Oracle · Synapse · **Gossip** · Shadow · Pulse · **Forge** · Page  
-Reload extension after `git pull`.
+## Time feed
+`public/pan-time.ics` · env `CALENDAR_ICS_URL`  
+https://raw.githubusercontent.com/adjjvmorii26-png/pan-copilot/main/public/pan-time.ics
 
-## Ghost Meeting resolution
-Nerves were quiet → Linear issue opened for **Time organ (ICS)**.  
-Gossip is panel-wired and alone-mode safe.
+## Panel
+v0.9.2 — Synth · Oracle · Synapse · Gossip · Shadow · Pulse · Forge · Page
 
-## Next single move
-Light the Time organ: set `CALENDAR_ICS_URL` on Vercel production.
+## Closed
+**ADJ-12** Time organ (ICS) — Done
+
+## Next (when useful)
+Refresh ICS from real Google/Outlook events when the week fills in.
