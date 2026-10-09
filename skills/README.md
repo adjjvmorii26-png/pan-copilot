@@ -1,31 +1,17 @@
-# Pan Skills — Catalog
+# Pan Skills
 
-Audited continuum. Prefer **organ-native** skills over generic advice.
+## Primary (asset-first)
+| Rank | Skill | Role |
+|------|-------|------|
+| **1** | **[asset-alchemist](./asset-alchemist.md)** ✨ | **Create unique assets** |
+| 2 | ritual-oracle | Bottleneck + one move |
+| 3 | organ-gossip | Disagreement as signal |
+| 4 | context-synthesis | Multi-organ briefing |
 
-## Core
-| Skill | Role |
-|-------|------|
-| context-synthesis | Multi-organ briefing |
-| ritual-oracle | Bottleneck + one move |
-| shadow-mode | Absences as signal |
-| signal-compost | Anti-sprawl |
-| asset-alchemist | Forge unique assets |
-| autonomous-run / solo-runtime | Alone mode |
+## Creative / experimental
+ghost-meeting · pulse-poetry · echo-cartographer · boundary-candle · seed-vault · permission-archaeology · drift-detector · shadow-mode · dream-cycle
 
-## New (2026-10-08) experimental
-| Skill | Role |
-|-------|------|
-| [ghost-meeting](./ghost-meeting.md) | Organs chair a meeting |
-| [organ-gossip](./organ-gossip.md) | Disagreement as signal |
-| [drift-detector](./drift-detector.md) | Charter drift audit |
-| [boundary-candle](./boundary-candle.md) | 25/50m focus ritual |
-| [pulse-poetry](./pulse-poetry.md) | Heartbeat → verse |
-| [echo-cartographer](./echo-cartographer.md) | Page + chord map |
-| [seed-vault](./seed-vault.md) | Idea burial format |
-| [permission-archaeology](./permission-archaeology.md) | Velvet rope dig |
+## Surfaces
+- Panel extension · `/myspace.html` Studio · `/api/forge` · `/api/gossip`
 
-## Sense / meta / hands
-time-sense · pattern-sense · constellation · echo-chamber · dream-cycle · resonance-check · skill-mutator · memory-crystallizer · llm-bridge · opencode-hands · builders/*
-
-**Code organs:** Synapse · Forge · Heartbeat · Avatar  
-**Labs:** [EXPERIMENTS](../docs/EXPERIMENTS.md)
+**Rule:** if a response could be an asset, make the asset.

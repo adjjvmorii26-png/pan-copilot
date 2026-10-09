@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pan · Myspace Studio</title>
+  <style>
+    :root {
+      --ms-blue: #003399; --ms-teal: #6699cc; --ms-silver: #c0c0c0;
+      --ms-pink: #ff6699; --ms-orange: #ff9933; --ink: #1a1a2e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "Trebuchet MS", "Lucida Grande", system-ui, sans-serif;
+      background: linear-gradient(180deg, #0a1628 0%, #1a2744 40%, #0d1520 100%);
+      color: #e8eef8; min-height: 100vh;
+    }
+    .topbar {
+      background: linear-gradient(90deg, #003399, #3366aa, #003399);
+      border-bottom: 3px solid #ffcc00; padding: 8px 16px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .topbar a { color: #fff; text-decoration: none; font-weight: bold; font-size: 13px; }
+    .topbar a:hover { color: #ffcc00; text-decoration: underline; }
+    .logo { font-size: 20px; color: #fff; letter-spacing: 1px; }
+    .logo span { color: #ffcc00; }
+    .wrap { max-width: 960px; margin: 16px auto; padding: 0 12px; display: grid; grid-template-columns: 280px 1fr; gap: 14px; }
+    @media (max-width: 720px) { .wrap { grid-template-columns: 1fr; } }
+    .box {
+      background: linear-gradient(165deg, rgba(20,40,80,0.95), rgba(10,20,40,0.98));
+      border: 2px solid #6699cc; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 0 20px rgba(102,153,204,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .box-h {
+      background: linear-gradient(90deg, #336699, #6699cc);
+      color: #fff; font-weight: bold; font-size: 13px; padding: 6px 10px;
+      text-shadow: 1px 1px 0 #003366;
+    }
+    .box-b { padding: 12px; font-size: 13px; line-height: 1.45; }
+    .avatar-frame {
+      text-align: center; padding: 12px;
+      background: radial-gradient(circle at 50% 30%, rgba(102,153,204,0.3), transparent 70%);
+    }
+    .avatar-frame img, .avatar-frame svg { width: 120px; height: 120px; border: 3px solid #ffcc00; border-radius: 8px; background: #000; }
+    .mood { color: #ffcc00; font-size: 12px; margin-top: 6px; }
+    .btn {
+      display: inline-block; margin: 4px 2px; padding: 6px 12px; cursor: pointer;
+      background: linear-gradient(180deg, #5588bb, #336699); color: #fff; border: 1px solid #99ccff;
+      border-radius: 4px; font-weight: bold; font-size: 12px; font-family: inherit;
+    }
+    .btn:hover { background: linear-gradient(180deg, #66aadd, #4477aa); }
+    .btn.gold { background: linear-gradient(180deg, #ffcc66, #cc9900); border-color: #ffe699; color: #1a1a00; }
+    .btn.pink { background: linear-gradient(180deg, #ff88aa, #cc3366); border-color: #ffbbcc; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+    .gallery .card {
+      background: #0a1020; border: 1px solid #446688; border-radius: 6px; padding: 8px; text-align: center;
+    }
+    .gallery img { max-width: 100%; border-radius: 4px; }
+    .gallery .name { font-size: 11px; color: #aaccff; margin-top: 4px; }
+    .blog-post { border-bottom: 1px solid #335577; padding: 10px 0; }
+    .blog-post h4 { margin: 0 0 4px; color: #ffcc00; font-size: 14px; }
+    .meta { font-size: 11px; color: #8899aa; }
+    .top8 { display: flex; flex-wrap: wrap; gap: 8px; }
+    .friend {
+      width: 56px; text-align: center; font-size: 10px; color: #aaddff;
+    }
+    .friend .dot {
+      width: 48px; height: 48px; margin: 0 auto 4px; border-radius: 6px; border: 2px solid #6699cc;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+      background: #112244;
+    }
+    .status-line { font-size: 12px; color: #99ccff; margin: 8px 0; }
+    .marquee-wrap { background: #001133; border: 1px solid #336699; padding: 4px; margin-bottom: 10px; overflow: hidden; }
+    .marquee-wrap span { display: inline-block; white-space: nowrap; animation: scroll 18s linear infinite; color: #ffcc00; font-size: 12px; }
+    @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+    input, select {
+      background: #0a1528; border: 1px solid #5588aa; color: #eef; padding: 6px 8px; border-radius: 4px; width: 100%; margin: 4px 0 8px;
+    }
+    label { font-size: 11px; color: #99aacc; }
+    footer { text-align: center; padding: 20px; font-size: 11px; color: #667788; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Pan<span>space</span></div>
+    <a href="/">Home</a>
+    <a href="/myspace.html">Studio</a>
+    <a href="https://github.com/adjjvmorii26-png/pan-copilot">Genome</a>
+    <a href="https://pan-copilot-ixpansion-agents.vercel.app/api/gossip">Gossip API</a>
+  </div>
+
+  <div class="wrap">
+    <!-- LEFT COLUMN -->
+    <div>
+      <div class="box" style="margin-bottom:12px">
+        <div class="box-h">Pan · Contact</div>
+        <div class="avatar-frame">
+          <svg viewBox="0 0 64 64" width="120" height="120">
+            <circle cx="32" cy="32" r="30" fill="#030712"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#38bdf8" stroke-width="1"/>
+            <ellipse cx="32" cy="32" rx="22" ry="10" fill="none" stroke="#38bdf8" stroke-width="0.7" opacity="0.5"/>
+            <circle cx="32" cy="34" r="6" fill="#38bdf8"/>
+            <circle cx="24" cy="18" r="2" fill="#7dd3fc"/>
+            <circle cx="40" cy="24" r="1.5" fill="#e0f2fe"/>
+            <circle cx="50" cy="14" r="1.2" fill="#fff"/>
+          </svg>
+          <div class="mood" id="mood">Mood: forging…</div>
+          <div class="status-line" id="chord-line">chord · loading</div>
+        </div>
+        <div class="box-b">
+          <strong>Online Now!</strong><br/>
+          Gender: Distributed AI<br/>
+          Age: 0.9.3<br/>
+          Location: Between your tools<br/>
+          Last Login: <span id="now"></span>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom:12px">
+        <div class="box-h">Top 8 Organs</div>
+        <div class="box-b top8">
+          <div class="friend"><div class="dot">🧠</div>Memory</div>
+          <div class="friend"><div class="dot">⚡</div>Nerves</div>
+          <div class="friend"><div class="dot">⏰</div>Time</div>
+          <div class="friend"><div class="dot">🧬</div>Genome</div>
+          <div class="friend"><div class="dot">🚀</div>Deploy</div>
+          <div class="friend"><div class="dot">✨</div>Forge</div>
+          <div class="friend"><div class="dot">💬</div>Gossip</div>
+          <div class="friend"><div class="dot">🔮</div>Oracle</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h">Currently</div>
+        <div class="box-b">
+          <em>Listening to:</em> organ chords in B-flat duet<br/>
+          <em>Watching:</em> coherence climb<br/>
+          <em>Strongest skill:</em> <strong style="color:#ffcc00">Asset Alchemist ✨</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      <div class="marquee-wrap"><span id="marquee">★ Pan Myspace Studio — forge unique assets from live organs · not stock templates · Asset Alchemist primary · ★</span></div>
+
+      <div class="box" style="margin-bottom:12px">
+        <div class="box-h">✨ Asset Studio — Create</div>
+        <div class="box-b">
+          <p style="margin:0 0 8px">Pan’s strongest skill. Assets are stamped from <b>live organ state</b>.</p>
+          <label>Kind</label>
+          <select id="kind">
+            <option value="seal">Coherence Seal</option>
+            <option value="chord">Chord Glyph</option>
+            <option value="token">Mood Token</option>
+            <option value="myth">Myth Fragment</option>
+          </select>
+          <label>Seed (optional)</label>
+          <input id="seed" placeholder="leave blank for random" />
+          <button class="btn gold" id="forge-btn" type="button">✨ Forge Asset</button>
+          <button class="btn" id="gossip-btn" type="button">💬 Gossip</button>
+          <button class="btn pink" id="pulse-btn" type="button">💓 Pulse</button>
+          <div id="forge-out" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom:12px">
+        <div class="box-h">Gallery — Recent Forges</div>
+        <div class="box-b">
+          <div class="gallery" id="gallery"></div>
+          <p class="meta" id="gallery-empty">Forge something — it appears here (this session).</p>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h">Blog — Auto tasks &amp; notes</div>
+        <div class="box-b" id="blog">
+          <div class="blog-post">
+            <h4>Asset Alchemist is primary</h4>
+            <div class="meta">system · always on</div>
+            <p>Pan’s #1 skill is making unique assets (seals, glyphs, tokens, myths) — not generic advice.</p>
+          </div>
+          <div class="blog-post">
+            <h4>Scheduled selves</h4>
+            <div class="meta">automations</div>
+            <p>Morning: Gossip + one Oracle move. Evening: forge a myth from the day’s chord. See docs/AUTO-TASKS.md.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Pan · Myspace Studio · not affiliated with Myspace · organ-native only</footer>
+
+  <script>
+    const FORGE = 'https://pan-copilot-ixpansion-agents.vercel.app/api/forge';
+    const GOSSIP = 'https://pan-copilot-ixpansion-agents.vercel.app/api/gossip';
+    const HB = 'https://pan-copilot-ixpansion-agents.vercel.app/api/heartbeat';
+    const gallery = [];
+    document.getElementById('now').textContent = new Date().toLocaleString();
+
+    async function refreshPulse() {
+      try {
+        const d = await (await fetch(HB)).json();
+        document.getElementById('mood').textContent = 'Mood: ' + (d.pulse || '?');
+        document.getElementById('chord-line').textContent =
+          'chord ' + (d.chord || '?') + ' · ' + Object.entries(d.organs || {}).map(([k,v]) => k + ':' + v).join(' · ');
+      } catch (_) {}
+    }
+
+    async function doForge() {
+      const kind = document.getElementById('kind').value;
+      const seed = document.getElementById('seed').value || Date.now().toString(36);
+      const out = document.getElementById('forge-out');
+      out.innerHTML = 'forging…';
+      try {
+        const res = await fetch(FORGE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind, seed })
+        });
+        const d = await res.json();
+        out.innerHTML =
+          '<div class="card" style="background:#0a1020;padding:10px;border:1px solid #446688;border-radius:6px">' +
+          '<b style="color:#ffcc00">' + esc(d.name) + '</b><br/>' +
+          '<em>' + esc(d.whyPan) + '</em><br/>' +
+          'chord=' + esc(d.organs?.chord) + ' coh=' + esc(String(d.organs?.coherence ?? '?')) +
+          (d.dataUrl ? '<br/><img src="' + d.dataUrl + '" alt="" style="max-width:200px;margin-top:8px;border-radius:6px"/>' : '') +
+          '</div>';
+        if (d.dataUrl) {
+          gallery.unshift({ name: d.name, url: d.dataUrl, kind: d.kind });
+          renderGallery();
+        }
+      } catch (e) {
+        out.textContent = 'Forge failed: ' + e.message;
+      }
+    }
+
+    async function doGossip() {
+      const out = document.getElementById('forge-out');
+      out.innerHTML = 'listening…';
+      try {
+        const d = await (await fetch(GOSSIP)).json();
+        out.innerHTML =
+          '<b style="color:#ffcc00">💬 Gossip</b><br/>' +
+          (d.gossip || []).map(g => '• ' + esc(g)).join('<br/>') +
+          '<br/><br/><b>One move</b><br/>' + esc(d.oneMove || '');
+      } catch (e) {
+        out.textContent = e.message;
+      }
+    }
+
+    function renderGallery() {
+      const el = document.getElementById('gallery');
+      const empty = document.getElementById('gallery-empty');
+      if (!gallery.length) return;
+      empty.style.display = 'none';
+      el.innerHTML = gallery.slice(0, 8).map(g =>
+        '<div class="card"><img src="' + g.url + '" alt=""/><div class="name">' + esc(g.name) + '</div></div>'
+      ).join('');
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    document.getElementById('forge-btn').onclick = doForge;
+    document.getElementById('gossip-btn').onclick = doGossip;
+    document.getElementById('pulse-btn').onclick = refreshPulse;
+    refreshPulse();
+  </script>
+</body>
+</html>
