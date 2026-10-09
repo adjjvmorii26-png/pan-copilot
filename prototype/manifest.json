@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Pan – Panoptic Co-Pilot",
-  "version": "0.9.2",
-  "description": "Distributed AI co-pilot. Nebula face · Avatar · Synapse · Oracle · Shadow.",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "version": "0.9.6",
+  "description": "Distributed AI co-pilot. Triad HUD · Forge · Gossip · Edge.",
+  "permissions": ["activeTab", "scripting", "storage", "alarms"],
   "host_permissions": ["http://localhost/*", "https://*.vercel.app/*", "https://*.netlify.app/*"],
   "background": { "service_worker": "background.js" },
   "content_scripts": [{
