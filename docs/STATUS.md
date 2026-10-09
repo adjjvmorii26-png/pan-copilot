@@ -1,34 +1,29 @@
-# Pan Status — 2026-10-09
+# Pan Status — 2026-10-09 (trio scoring)
 
-## Chord
-**Duet+** · coherence **90** · myth *constellation locked*
+## Chord logic
+| Beating organs | Chord |
+|----------------|-------|
+| 3 | **trio** |
+| 2 | duet |
+| 1 | solo |
+| 0 | silence |
 
-| Organ | Live |
-|-------|------|
-| Memory (Notion) | ✅ beating |
-| Nerves (Linear) | ✅ beating |
-| Time (Calendar ICS) | ✅ **ics-ready** |
-| Genome (GitHub) | ✅ |
-| Deploy (Vercel) | ✅ |
+Coherence weights: Memory **35** · Nerves **35** · Time **30** (full = 100).
+
+## Expected live
+| Organ | State |
+|-------|--------|
+| Memory (Notion) | beating |
+| Nerves (Linear) | beating |
+| Time (ICS) | beating |
+| Chord | **trio** |
+| Coherence | **100** |
 
 ## Code organs
-| Endpoint | Role |
-|----------|------|
-| `/api/heartbeat` | Pulse + organ map |
-| `/api/synthesize` | Context synthesis |
-| `/api/synapse` | Chord / coherence / myth |
-| `/api/forge` | Procedural SVG assets |
-| `/api/gossip` | Ranked organ tensions |
+`/api/heartbeat` · `/api/synapse` · `/api/synthesize` · `/api/forge` · `/api/gossip`
 
 ## Time feed
-`public/pan-time.ics` · env `CALENDAR_ICS_URL`  
-https://raw.githubusercontent.com/adjjvmorii26-png/pan-copilot/main/public/pan-time.ics
+`CALENDAR_ICS_URL` → `public/pan-time.ics`
 
 ## Panel
 v0.9.2 — Synth · Oracle · Synapse · Gossip · Shadow · Pulse · Forge · Page
-
-## Closed
-**ADJ-12** Time organ (ICS) — Done
-
-## Next (when useful)
-Refresh ICS from real Google/Outlook events when the week fills in.

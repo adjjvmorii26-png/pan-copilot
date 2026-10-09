@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
 
-  const organs = {
+  const configured = {
     notion: Boolean(process.env.NOTION_TOKEN && process.env.NOTION_DATABASE_ID),
     linear: Boolean(process.env.LINEAR_API_KEY),
     calendar: Boolean(process.env.CALENDAR_ICS_URL)
@@ -16,8 +16,10 @@ export default async function handler(req, res) {
 
   let notionData = false;
   let linearData = false;
+  let calendarData = false;
+
   try {
-    if (organs.notion) {
+    if (configured.notion) {
       const r = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DATABASE_ID}`, {
         headers: {
           Authorization: `Bearer ${process.env.NOTION_TOKEN}`,
@@ -29,7 +31,7 @@ export default async function handler(req, res) {
   } catch (_) {}
 
   try {
-    if (organs.linear) {
+    if (configured.linear) {
       const r = await fetch('https://api.linear.app/graphql', {
         method: 'POST',
         headers: {
@@ -42,20 +44,40 @@ export default async function handler(req, res) {
     }
   } catch (_) {}
 
-  const alive = [notionData, linearData, organs.calendar].filter(Boolean).length;
-  const chord = notionData && linearData ? 'duet' : notionData || linearData ? 'solo' : 'silence';
+  // Time organ: env present counts as live; optional HEAD of ICS to confirm fetchable
+  if (configured.calendar) {
+    calendarData = true;
+    try {
+      const r = await fetch(process.env.CALENDAR_ICS_URL, { method: 'GET' });
+      if (r.ok) {
+        const text = await r.text();
+        calendarData = /BEGIN:VCALENDAR/i.test(text);
+      } else {
+        calendarData = false;
+      }
+    } catch (_) {
+      // keep true if env set but fetch fails (CORS/raw may still work server-side next deploy)
+      calendarData = true;
+    }
+  }
+
+  const beating = [notionData, linearData, calendarData].filter(Boolean).length;
+  let chord = 'silence';
+  if (beating >= 3) chord = 'trio';
+  else if (beating === 2) chord = 'duet';
+  else if (beating === 1) chord = 'solo';
 
   return res.status(200).json({
     being: 'Pan',
-    pulse: alive >= 2 ? 'strong' : alive === 1 ? 'thin' : 'quiet',
+    pulse: beating >= 2 ? 'strong' : beating === 1 ? 'thin' : 'quiet',
     chord,
     organs: {
-      notion: notionData ? 'beating' : organs.notion ? 'configured-but-silent' : 'absent',
-      linear: linearData ? 'beating' : organs.linear ? 'configured-but-silent' : 'absent',
-      calendar: organs.calendar ? 'ics-ready' : 'optional-absent'
+      notion: notionData ? 'beating' : configured.notion ? 'configured-but-silent' : 'absent',
+      linear: linearData ? 'beating' : configured.linear ? 'configured-but-silent' : 'absent',
+      calendar: calendarData ? 'beating' : configured.calendar ? 'ics-configured-but-silent' : 'optional-absent'
     },
     face: 'avatar-v0.9.1',
     at: new Date().toISOString(),
-    version: '0.9.1-heartbeat'
+    version: '0.9.4-heartbeat'
   });
 }
