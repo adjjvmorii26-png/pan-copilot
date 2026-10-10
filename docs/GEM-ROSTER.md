@@ -5,18 +5,18 @@ Source catalog (shared Gem / agent personas). Status: **catalogued 2026-10-10**.
 | Gem / concept | Role | Pan fit |
 |---------------|------|--------|
 | gemini-gem-creator | Custom Gem personas & system prompts | Meta — skill authoring |
-| **energy-flow-scheduler** | Cognitive-bandwidth tasks vs rigid slots | **Time organ** · skill shipped |
+| **energy-flow-scheduler** | Cognitive-bandwidth tasks vs rigid slots | **Shipped** skill + scheduler.js |
 | 5-angle-creative-spark | Multi-vector ideation / mutation | Asset Forge adjacent |
 | anomaly-hermit-sandbox | Weird sandboxes, CA, non-Euclidean | Emergence playground |
 | ixpansion-architect | VSA routing, CRDT, serverless edge | Genome architecture |
-| ixpansion-mesh-sentinel | Multi-agent debug + CI | **Mycelial Sentinel** sibling |
+| ixpansion-mesh-sentinel | Multi-agent debug + CI | Mycelial Sentinel sibling |
 | synth-hall-orchestrator | Socket.IO + monorepo coord | Edge telemetry |
-| **resonance-pulse-engine** | Multi-vector friction + temporal synthesis | **Triad friction** |
+| **resonance-pulse-engine** | Multi-vector friction + temporal synthesis | **Shipped** skill + resonance.js |
 | model-gateways-otel | Multi-model routing + OTel | Future deploy |
 | context-mcp-architect | MCP servers + typed tools | Connector layer |
-| browser-agent-harness | DOM resilience + web harness | **Panel extension** |
+| browser-agent-harness | DOM resilience + web harness | Panel extension |
 | verifiability-harness-auditor | TDD, self-heal loops, gates | Proof battery |
-| recursive-context-architect | Memory compaction / checkpoints | **Notion Memory Palace** |
+| recursive-context-architect | Memory compaction / checkpoints | Notion Memory Palace |
 | zero-shot-cli-synth | Headless CLI synthesis | Alone mode |
 | sovereign-edge-mesh | Offline-first encrypted edge | Edge Gemma path |
 | a2a-protocol-swarm | A2A network + Agent Cards | Multi-agent |
@@ -28,10 +28,10 @@ Source catalog (shared Gem / agent personas). Status: **catalogued 2026-10-10**.
 | creative-synthesis-visionary | Mythic visual identity | Visual DNA |
 
 ## Materialized
-- `skills/energy-flow-scheduler.md`
-- `experiments/energy-flow-scheduler/scheduler.js`
+1. energy-flow-scheduler — trophic bandwidth
+2. resonance-pulse-engine — friction → one move
 
-## Next candidates (when useful)
-1. resonance-pulse-engine → fold deeper into `/api/edge` triad
-2. recursive-context-architect → Notion compost pass
-3. browser-agent-harness → panel resilience
+## Next
+- recursive-context-architect → Notion compost
+- browser-agent-harness → panel resilience
+- Wire resonance into `/api/edge` response field
