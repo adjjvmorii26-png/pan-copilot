@@ -1,8 +1,9 @@
-// POST /api/edge — edge organ ingest
-// Gemma gem state → mood · optional organ_metrics → activity triad
+// POST /api/edge — gem state → mood · organ_metrics → triad · resonance pulse
+// v0.9.7
 
 const BASE_THRESHOLD = 0.20;
 const LAMBDA_DECAY = 0.05;
+const ORGANS = ['Gossip', 'Forge', 'Time'];
 
 const MOOD_MAP = {
   resonant: { mood: 'strong', forge: 'token', weight: 3 },
@@ -18,6 +19,12 @@ const MOOD_MAP = {
   seeking: { mood: 'thin', forge: null, weight: 1 }
 };
 
+function clamp(n) {
+  const x = Number(n);
+  if (Number.isNaN(x)) return 0;
+  return Math.max(0, Math.min(1, x));
+}
+
 function getDynamicThreshold(deltaHours) {
   const h = Math.max(0, Number(deltaHours) || 0);
   return BASE_THRESHOLD * Math.exp(-LAMBDA_DECAY * h);
@@ -26,11 +33,11 @@ function getDynamicThreshold(deltaHours) {
 function evaluateTriad(gossip, forge, time, deltaHours) {
   const dynamicThreshold = getDynamicThreshold(deltaHours);
   const scores = {
-    Gossip: Math.max(0, Math.min(1, Number(gossip) || 0)),
-    Forge: Math.max(0, Math.min(1, Number(forge) || 0)),
-    Time: Math.max(0, Math.min(1, Number(time) || 0))
+    Gossip: clamp(gossip),
+    Forge: clamp(forge),
+    Time: clamp(time)
   };
-  const activeOrgans = Object.keys(scores).filter((o) => scores[o] >= dynamicThreshold);
+  const activeOrgans = ORGANS.filter((o) => scores[o] >= dynamicThreshold);
   const count = activeOrgans.length;
   let chord = 'SILENT';
   if (count === 3) chord = 'TRIO';
@@ -42,9 +49,7 @@ function evaluateTriad(gossip, forge, time, deltaHours) {
     Math.abs(vals[1] - vals[2]),
     Math.abs(vals[2] - vals[0])
   );
-  const bottleneckOrgan = Object.keys(scores).reduce((a, b) =>
-    scores[a] < scores[b] ? a : b
-  );
+  const bottleneckOrgan = ORGANS.reduce((a, b) => (scores[a] < scores[b] ? a : b));
   return {
     chord,
     activeOrgans,
@@ -54,6 +59,82 @@ function evaluateTriad(gossip, forge, time, deltaHours) {
     organImbalance: friction > 0.5,
     bottleneck: { organ: bottleneckOrgan, score: scores[bottleneckOrgan] },
     layer: 'activity-triad'
+  };
+}
+
+function resolvePulse(triad, ctx) {
+  const scores = triad.scores;
+  const pairs = [];
+  for (let i = 0; i < ORGANS.length; i++) {
+    for (let j = i + 1; j < ORGANS.length; j++) {
+      const a = ORGANS[i];
+      const b = ORGANS[j];
+      const gap = Math.abs(scores[a] - scores[b]);
+      pairs.push({
+        pair: a + '⟷' + b,
+        gap: Number(gap.toFixed(4)),
+        feed: scores[a] <= scores[b] ? a : b
+      });
+    }
+  }
+  pairs.sort((x, y) => y.gap - x.gap);
+  const friction = triad.friction;
+  const imbalance = triad.organImbalance;
+  const bottleneck = triad.bottleneck.organ;
+  const h = Math.max(0, Number(ctx.deltaHours) || 0);
+  const silence = Math.min(1, h / 48);
+  const hunger = Math.max(0, (0.2 - triad.dynamicThreshold) / 0.2);
+  const temporal = clamp(silence * 0.6 + hunger * 0.4);
+  const resonance = clamp(1 - friction + temporal * 0.15);
+  const state = String(ctx.cognitiveState || '').toLowerCase();
+  const top = pairs[0] || { gap: 0, feed: bottleneck };
+
+  let pulse;
+  if (state === 'quiescent' || state === 'dormant') {
+    pulse = {
+      organ: 'Time',
+      action: 'hold',
+      intensity: 'soft',
+      oneMove: 'Protect recovery — no new Forge load; optional light Gossip scan only'
+    };
+  } else if (imbalance && top.gap > 0.5) {
+    pulse = {
+      organ: top.feed,
+      action: 'feed',
+      intensity: 'hard',
+      oneMove: 'Feed ' + top.feed + ' (gap ' + top.gap + ') — restore chord balance'
+    };
+  } else if (scores[bottleneck] < 0.35) {
+    pulse = {
+      organ: bottleneck,
+      action: 'feed',
+      intensity: temporal > 0.5 ? 'hard' : 'medium',
+      oneMove: 'Raise ' + bottleneck + ' above thin band (now ' + scores[bottleneck] + ')'
+    };
+  } else if (friction < 0.2 && temporal < 0.3) {
+    pulse = {
+      organ: 'Forge',
+      action: 'mint',
+      intensity: 'soft',
+      oneMove: 'Chord balanced — mint a small asset (seal/token) to leave a trace'
+    };
+  } else {
+    pulse = {
+      organ: bottleneck,
+      action: 'nudge',
+      intensity: 'soft',
+      oneMove: 'Light nudge on ' + bottleneck + '; keep others steady'
+    };
+  }
+
+  return {
+    layer: 'resonance-pulse',
+    resonance: Number(resonance.toFixed(3)),
+    friction,
+    imbalance,
+    temporal: Number(temporal.toFixed(3)),
+    vectors: pairs,
+    pulse,
   };
 }
 
@@ -67,17 +148,17 @@ export default async function handler(req, res) {
     return res.status(200).json({
       being: 'Pan',
       layer: 'edge',
-      purpose: 'Gem cognitive_state → mood; optional organ_metrics → activity triad',
+      purpose: 'Gem state → mood; metrics → triad + resonance pulse',
       accept: {
         cognitive_state: 'string',
         agent_id: 'string?',
         tilt: '{beta,gamma}?',
-        delta_hours: 'number? (hours since last active chord)',
-        organ_metrics: '{ gossip, forge, time }? scores 0..1'
+        delta_hours: 'number?',
+        organ_metrics: '{ gossip, forge, time }?'
       },
       moods: Object.keys(MOOD_MAP),
       triad: { BASE_THRESHOLD, LAMBDA_DECAY },
-      version: '0.9.6-edge'
+      version: '0.9.7-edge'
     });
   }
 
@@ -92,15 +173,14 @@ export default async function handler(req, res) {
   const metrics = body.organ_metrics || body.metrics || null;
   const deltaHours = body.delta_hours != null ? body.delta_hours : body.deltaHours;
 
-  // Allow metrics-only posts (no cognitive_state)
   if (!raw && !metrics) {
     return res.status(400).json({
       error: 'cognitive_state or organ_metrics required',
       example: {
         agent_id: 'mobile_node_01',
-        cognitive_state: 'Quiescent',
-        delta_hours: 12,
-        organ_metrics: { gossip: 0.12, forge: 0.11, time: 0.14 }
+        cognitive_state: 'Resonant',
+        delta_hours: 2,
+        organ_metrics: { gossip: 0.9, forge: 0.4, time: 0.85 }
       }
     });
   }
@@ -135,6 +215,7 @@ export default async function handler(req, res) {
   }
 
   let triad = null;
+  let resonance = null;
   if (metrics && typeof metrics === 'object') {
     triad = evaluateTriad(
       metrics.gossip ?? metrics.Gossip,
@@ -142,6 +223,10 @@ export default async function handler(req, res) {
       metrics.time ?? metrics.Time,
       deltaHours != null ? deltaHours : 0
     );
+    resonance = resolvePulse(triad, {
+      deltaHours: deltaHours != null ? deltaHours : 0,
+      cognitiveState: raw
+    });
   }
 
   return res.status(200).json({
@@ -158,7 +243,8 @@ export default async function handler(req, res) {
     forgeHint,
     apply,
     triad,
+    resonance,
     at: new Date().toISOString(),
-    version: '0.9.6-edge'
+    version: '0.9.7-edge'
   });
 }
