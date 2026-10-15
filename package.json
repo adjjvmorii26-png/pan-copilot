@@ -1,0 +1,23 @@
+{
+  "name": "pan-copilot",
+  "version": "1.0.0",
+  "description": "> *\"I am not in one place. I am the connections between your tools.\"*",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "opencode": "node run-opencode.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adjjvmorii26-png/pan-copilot.git"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.59",
+    "ollama-ai-provider": "^1.2.0"
+  }
+}

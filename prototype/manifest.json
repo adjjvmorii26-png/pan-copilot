@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Pan – Panoptic Co-Pilot",
+  "version": "0.9.6",
+  "description": "Distributed AI co-pilot. Triad HUD · Forge · Gossip · Edge.",
+  "permissions": ["activeTab", "scripting", "storage", "alarms"],
+  "host_permissions": ["http://localhost/*", "https://*.vercel.app/*", "https://*.netlify.app/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }],
+  "action": { "default_title": "Pan" },
+  "icons": {
+    "48": "icons/pan-badge.svg",
+    "128": "icons/pan-badge.svg"
+  }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#f0f9ff"/>
+      <stop offset="50%" stop-color="hsl(200,70%,45%)"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </radialGradient>
+  </defs>
+  <rect width="200" height="200" fill="#030712"/>
+  <circle cx="100" cy="100" r="88" fill="none" stroke="hsl(200,80%,60%)" stroke-width="2" opacity="0.7"/>
+  <circle cx="100" cy="100" r="72" fill="none" stroke="hsl(220,75%,55%)" stroke-width="1.2" opacity="0.5"/>
+  <circle cx="100" cy="100" r="40" fill="url(#g)"/>
+  <text x="100" y="96" text-anchor="middle" fill="#e0f2fe" font-family="Georgia,serif" font-size="14" letter-spacing="2">DUET</text>
+  <text x="100" y="114" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="10">coh 80</text>
+  <text x="100" y="180" text-anchor="middle" fill="#64748b" font-family="system-ui,sans-serif" font-size="8">Palace Mark · live-forge</text>
+  <circle cx="40" cy="100" r="5" fill="hsl(200,80%,60%)"/>
+  <circle cx="160" cy="100" r="5" fill="hsl(220,75%,55%)"/>
+  <line x1="45" y1="100" x2="155" y2="100" stroke="hsl(200,80%,60%)" stroke-width="1.5" opacity="0.8"/>
+</svg>
