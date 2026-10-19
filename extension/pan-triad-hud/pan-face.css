@@ -1,0 +1,109 @@
+/* Pan Triad HUD — DARK_HEX_CYBERNETIC v0.9.10 */
+:root {
+  --pan-void: #03040A;
+  --pan-cyan: #00E5FF;
+  --pan-magenta: #FF2BD6;
+  --pan-muted: #64748b;
+  --pan-text: #e2e8f0;
+}
+
+#pan-hud-face {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 2147483646;
+  width: 228px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--pan-text);
+  background: rgba(3, 4, 10, 0.94);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  box-shadow:
+    0 0 24px rgba(0, 229, 255, 0.12),
+    0 8px 32px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.pan-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pan-chord-badge {
+  font-weight: 700;
+  color: var(--pan-cyan);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+}
+
+.pan-pulse { color: var(--pan-muted); }
+
+.pan-organ-vector {
+  display: flex;
+  gap: 10px;
+  height: 52px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-col label {
+  margin-top: 4px;
+  color: var(--pan-muted);
+  font-size: 10px;
+}
+
+.bar {
+  display: block;
+  width: 14px;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--pan-cyan);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+}
+
+.bar.forge {
+  background: var(--pan-magenta);
+  box-shadow: 0 0 8px rgba(255, 43, 214, 0.35);
+}
+
+.bar.time {
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+}
+
+.pan-bottleneck {
+  color: var(--pan-muted);
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.pan-bottleneck strong {
+  color: #fbbf24;
+}
+
+.pan-one-move .label {
+  color: var(--pan-cyan);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.pan-one-move .action {
+  margin-top: 3px;
+  color: var(--pan-text);
+  font-size: 11px;
+  border-left: 2px solid var(--pan-magenta);
+  padding-left: 8px;
+}
