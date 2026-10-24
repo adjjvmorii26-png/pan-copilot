@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Pan Triad HUD Overlay",
-  "version": "0.9.10",
-  "description": "Triad HUD · oneMove · DARK_HEX · alarms · triadInput",
+  "version": "0.9.11",
+  "description": "Triad HUD · constellation face · ambient · DARK_HEX · triadInput",
   "permissions": ["storage", "alarms"],
   "host_permissions": [
     "http://127.0.0.1:8787/*",
@@ -12,7 +12,8 @@
     "https://morrow-wrqekvms.manus.space/*",
     "https://*.manus.space/*",
     "https://api.alexalex.info/*",
-    "https://pan-copilot-ixpansion-agents.vercel.app/*"
+    "https://pan-copilot-ixpansion-agents.vercel.app/*",
+    "https://images.pexels.com/*"
   ],
   "background": {
     "service_worker": "background.js"
