@@ -1,39 +1,62 @@
 # Connectors Pan can use (Grok-connected)
 
-These are available in **With Grok** mode today. Wire them into rituals as needed.
+Updated 2026-11-04. **With Grok** mode only for OAuth connectors.
 
-## Already core organs
-| Service | Role |
-|---------|------|
-| GitHub | Genome |
-| Notion | Memory Palace |
-| Linear | Nervous system |
-| Google Calendar | Time |
-| Vercel / Netlify | Deploy / pulse |
-| Voice | Oracle whisper assets |
-| Gamma | Decks |
-| Automations | Scheduled alone runs |
+## Primary organs
+| Service | Role | Skill |
+|---------|------|-------|
+| GitHub | Genome | code-lattice · organism-steward |
+| Notion | Memory Palace | steward traces |
+| Linear | Nervous system | organism-steward |
+| **Gmail** | Gossip | **google-organ** |
+| **Google Calendar** | Time | **google-organ** |
+| **Google Drive** | Forge artifacts | **google-organ** |
+| Vercel | Edge / pulse | live-reusable-test-surface |
+| Netlify | Legacy deploy | — |
+| Voice | Oracle whisper | — |
+| Gamma | Decks | — |
+| Automations | Scheduled alone runs | — |
 
-## Available but not yet primary organs
+## Google Organ protocol
+Treat Gmail + Calendar + Drive as **one sense organ**:
+1. Calendar window (RFC3339 + offset)
+2. Gmail operators (`newer_than:`, `is:unread`, …)
+3. Drive only if files/docs matter
+4. Synthesize · act only on explicit intent (prefer drafts)
+
+HUD: `apps/google-organ/` · extension: `apps/google-organ/extension/`
+
+## Secondary (available)
 | Service | Pan use |
 |---------|--------|
-| **Gmail** | Capture loops, daily signal (read/summarize — careful with send) |
-| **Outlook / Outlook Calendar** | Second calendar / mail organ |
-| **Google Drive** | Store forged assets, ritual PDFs |
-| **Figma** | UI for panel / status face |
-| **Canva** | Visual assets |
-| **Excalidraw** | Constellation diagrams |
-| **Microsoft Teams** | Team pulse (if you use Teams) |
-| **HyperFrames** | Video assets |
+| Outlook / Outlook Calendar | Second mail/time organ |
+| Figma | Panel / face design |
+| Canva | Visual assets |
+| Excalidraw | Constellation diagrams |
+| Microsoft Teams | Team pulse |
+| HyperFrames | Video assets |
+| Asana | Task dual-track (if connected) |
 
-## Free external (not Grok OAuth — local/self-host)
+## Free external (not Grok OAuth)
 | Source | Role |
 |--------|------|
-| **Ollama** | Local LLM |
-| **OmniRoute** | Free multi-provider gateway |
-| **OpenCode** | Coding agent on the genome |
+| Ollama | Local LLM |
+| OmniRoute | Multi-provider gateway |
+| OpenCode | Coding agent on genome |
 
-See [LLM-ORGANS.md](./LLM-ORGANS.md).
+## Skills lattice (Pan-relevant)
+| Skill | Path / note |
+|-------|-------------|
+| google-organ | Unifies all Google connectors |
+| gem-skill-bridge | Persona + skills → export → edge bootstrap |
+| organism-steward | Caretaker; pulls google-organ when connected |
+| live-reusable-test-surface | Chamber probes for edge/openclaw/VSA |
+| code-lattice | Repo atlas |
+| dual-lens / zero-copy / forge-breakers | Pan-Nexus Architect stack |
+| report-compass | Status bearings |
 
-## Design rule
-Add an organ only if it gives a **new sense**. Don’t stack three mailboxes for the same signal.
+## Design rules
+1. Add an organ only if it gives a **new sense**.
+2. Don’t stack three mailboxes for the same signal.
+3. Connector data > model guess; on auth failure name the connector.
+4. Irreversible (send, delete, trash): confirm when ambiguous.
