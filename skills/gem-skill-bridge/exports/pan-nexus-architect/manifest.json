@@ -1,0 +1,13 @@
+{
+  "format": "gem-skill-bridge/v1",
+  "gem_file": "pan-nexus-architect.md",
+  "persona_seal": "sha256:8fe44ea7c163910fc82a40beb98ccfaecaaf9fd69bdac4a8c72c2118d71ec133",
+  "skills": [
+    {"name": "dual-lens", "seal": "sha256:c109b9e6070143ae2c15b92754875d748d4ef3f7333dfe4153af69e81439ac3f"},
+    {"name": "zero-copy", "seal": "sha256:fd2dcffb94e83bb131c7f707e566c93653fd072b65a99eab22960e155e0ed2b4"},
+    {"name": "forge-breakers", "seal": "sha256:591341e0b905e1163150345fc7573cbf0d2d5fbef92086c827edb64c76ce20d5"},
+    {"name": "code-lattice", "seal": "sha256:f27fc18068553b5499ade3ad2f4a63f5e8f7402e449dff821c427c16418ce672"},
+    {"name": "organism-steward", "seal": "sha256:73ede26d974e77d780fbc217db65941a203dd5c87e1ff9d6f77dfaa4775a1c46"}
+  ],
+  "timestamp": 1793754439.4865139
+}
