@@ -45,6 +45,7 @@ export default async function handler(req, res) {
   } catch (_) {}
 
   // Time organ: env present counts as live; optional HEAD of ICS to confirm fetchable
+  // Primary Time sense is google-organ (Calendar connector) in Grok mode.
   if (configured.calendar) {
     calendarData = true;
     try {
@@ -56,7 +57,6 @@ export default async function handler(req, res) {
         calendarData = false;
       }
     } catch (_) {
-      // keep true if env set but fetch fails (CORS/raw may still work server-side next deploy)
       calendarData = true;
     }
   }
@@ -76,8 +76,8 @@ export default async function handler(req, res) {
       linear: linearData ? 'beating' : configured.linear ? 'configured-but-silent' : 'absent',
       calendar: calendarData ? 'beating' : configured.calendar ? 'ics-configured-but-silent' : 'optional-absent'
     },
-    face: 'avatar-v0.9.1',
+    face: 'avatar-v0.9.12',
     at: new Date().toISOString(),
-    version: '0.9.4-heartbeat'
+    version: '0.9.12-heartbeat'
   });
 }
