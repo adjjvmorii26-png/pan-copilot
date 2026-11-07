@@ -1,5 +1,5 @@
 // POST /api/edge — gem state → mood · organ_metrics → triad · resonance pulse
-// v0.9.7
+// v0.9.12
 
 const BASE_THRESHOLD = 0.20;
 const LAMBDA_DECAY = 0.05;
@@ -158,7 +158,7 @@ export default async function handler(req, res) {
       },
       moods: Object.keys(MOOD_MAP),
       triad: { BASE_THRESHOLD, LAMBDA_DECAY },
-      version: '0.9.7-edge'
+      version: '0.9.12-edge'
     });
   }
 
@@ -245,6 +245,6 @@ export default async function handler(req, res) {
     triad,
     resonance,
     at: new Date().toISOString(),
-    version: '0.9.7-edge'
+    version: '0.9.12-edge'
   });
 }
