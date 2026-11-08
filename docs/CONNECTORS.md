@@ -1,21 +1,29 @@
 # Connectors Pan can use (Grok-connected)
 
-Updated 2026-11-04. **With Grok** mode only for OAuth connectors.
+Updated **2026-11-07**. OAuth connectors work in **With Grok** mode only.
 
 ## Primary organs
 | Service | Role | Skill |
 |---------|------|-------|
 | GitHub | Genome | code-lattice · organism-steward |
 | Notion | Memory Palace | steward traces |
-| Linear | Nervous system | organism-steward |
+| Linear | Nervous system · task ledger | organism-steward |
 | **Gmail** | Gossip | **google-organ** |
 | **Google Calendar** | Time | **google-organ** |
 | **Google Drive** | Forge artifacts | **google-organ** |
-| Vercel | Edge / pulse | live-reusable-test-surface |
+| Vercel | Edge / pulse / heartbeat | live-reusable-test-surface |
 | Netlify | Legacy deploy | — |
 | Voice | Oracle whisper | — |
 | Gamma | Decks | — |
 | Automations | Scheduled alone runs | — |
+
+## Live endpoints
+| Endpoint | Version (as of 2026-11-07) |
+|----------|----------------------------|
+| `GET/POST /api/edge` | **0.9.12-edge** |
+| `GET /api/heartbeat` | **0.9.12-heartbeat** |
+
+Base: `https://pan-copilot-ixpansion-agents.vercel.app`
 
 ## Google Organ protocol
 Treat Gmail + Calendar + Drive as **one sense organ**:
@@ -25,6 +33,8 @@ Treat Gmail + Calendar + Drive as **one sense organ**:
 4. Synthesize · act only on explicit intent (prefer drafts)
 
 HUD: `apps/google-organ/` · extension: `apps/google-organ/extension/`
+
+Optional alone-mode Time path: set `CALENDAR_ICS_URL` on the heartbeat runtime (counts / live check only).
 
 ## Secondary (available)
 | Service | Pan use |
@@ -45,8 +55,8 @@ HUD: `apps/google-organ/` · extension: `apps/google-organ/extension/`
 | OpenCode | Coding agent on genome |
 
 ## Skills lattice (Pan-relevant)
-| Skill | Path / note |
-|-------|-------------|
+| Skill | Note |
+|-------|------|
 | google-organ | Unifies all Google connectors |
 | gem-skill-bridge | Persona + skills → export → edge bootstrap |
 | organism-steward | Caretaker; pulls google-organ when connected |
@@ -60,3 +70,4 @@ HUD: `apps/google-organ/` · extension: `apps/google-organ/extension/`
 2. Don’t stack three mailboxes for the same signal.
 3. Connector data > model guess; on auth failure name the connector.
 4. Irreversible (send, delete, trash): confirm when ambiguous.
+5. Task tracking: Linear project *Pan – Panoptic Co-Pilot* is nerves source of truth.

@@ -1,9 +1,9 @@
 # Pan Skills
 
-Skills are modular execution recipes (`SKILL.md` + scripts). Pan loads them **with Grok**; alone mode may only recommend.
+Updated **2026-11-07**. Skills are modular execution recipes (`SKILL.md` + scripts). Pan loads them **with Grok**; alone mode may only recommend.
 
 ## Sense & steward
-- **google-organ** — Gmail + Calendar + Drive pulse
+- **google-organ** — Gmail + Calendar + Drive pulse (primary sense)
 - **organism-steward** — IXPANSION / Pan health reports (includes Google pulse when live)
 - **report-compass** — Health · Drift · Opportunity · Silence
 
@@ -22,3 +22,6 @@ Context Synthesis · Ritual Oracle · Shadow · Signal Compost · Asset Alchemis
 
 ## Rule
 Compost before adding. Prefer extending **google-organ** or **organism-steward** over a third mail skill.
+
+## Version alignment
+Edge and heartbeat contract: **0.9.12**. Skills that post to `/api/edge` should accept that version string.
